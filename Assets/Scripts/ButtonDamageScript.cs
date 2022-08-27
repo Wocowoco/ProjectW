@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static LifeNodeManager;
+using static CombatEventManager;
 
-public class ButtonDamageScript : MonoBehaviour
+public class ButtonControlScript : MonoBehaviour
 {
     public int Damage;
     public DefenceRow DefenceRow;
@@ -46,6 +44,6 @@ public class ButtonDamageScript : MonoBehaviour
                 break;
         }
         CombatEventManager.DealDamage(defenceRow, damage);
-        Debug.Log($"Dealing {damage} damage to {defenceRow}.");
+        Debug.Log($"Dealing {damage} melee damage to {defenceRow}.");
     }
 }
