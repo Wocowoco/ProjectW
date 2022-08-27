@@ -3,23 +3,18 @@ using static CombatEventManager;
 
 public class ButtonControlScript : MonoBehaviour
 {
-    public int Damage;
+    public int Amount;
+
     public DefenceRow DefenceRow;
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     public void DealDamage()
     {
-        CombatEventManager.DealDamage(DefenceRow, Damage);
+        CombatEventManager.DealDamage(DefenceRow, Amount);
+    }
+
+    public void AddDefence()
+    {
+        CombatEventManager.AddDefence(DefenceRow, Amount);
     }
 
     public void DealRandomDamage()

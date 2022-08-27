@@ -72,12 +72,14 @@ public class LifeNodeManager : MonoBehaviour
 
     private void OnEnable()
     {
-        CombatEventManager.DealDamageEvent += TakeDamage;
+        CombatEventManager.TakeDamageEvent += TakeDamage;
+        CombatEventManager.AddDefenceEvent += AddDefence;
     }
 
     private void OnDisable()
     {
-        CombatEventManager.DealDamageEvent -= TakeDamage;
+        CombatEventManager.TakeDamageEvent -= TakeDamage;
+        CombatEventManager.AddDefenceEvent -= AddDefence;
     }
 
     public void TakeDamage(DefenceRow defenceRow, int amountOfDamage, DamageType damageType)
@@ -92,6 +94,24 @@ public class LifeNodeManager : MonoBehaviour
                 break;
             case DefenceRow.Bottom:
                 Health -= _defenceTypesBottom.CalculateDamageReceived(amountOfDamage, damageType);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void AddDefence(DefenceRow defenceRow, int defenceAmount, DefenceType defenceType)
+    {
+        switch (defenceRow)
+        {
+            case DefenceRow.Top:
+                _defenceTypesTop.AddDefence(defenceType, defenceAmount);
+                break;
+            case DefenceRow.Middle:
+                _defenceTypesMiddle.AddDefence(defenceType, defenceAmount);
+                break;
+            case DefenceRow.Bottom:
+                _defenceTypesBottom.AddDefence(defenceType, defenceAmount);
                 break;
             default:
                 break;
@@ -130,33 +150,36 @@ public class LifeNodeManager : MonoBehaviour
             }
         }
 
-        public void AddDefence(DefenceType defenceType)
+        public void AddDefence(DefenceType defenceType, int defenceAmount = 1)
         {
-            //Only add defence is it is not maxed yet
-            if (currentDefence < maxDefence)
+            for (int i = 0; i < defenceAmount; i++)
             {
-                defenceRow[currentDefence] = defenceType;
-                //Set color to defencetype
-                switch (defenceType)
+                //Only add defence is it is not maxed yet
+                if (currentDefence < maxDefence)
                 {
-                    case DefenceType.Normal:
-                        gameObject.transform.GetChild(currentDefence).GetComponent<SpriteRenderer>().color = _normalColor;
-                        break;
-                    case DefenceType.MeleeImmune:
-                        gameObject.transform.GetChild(currentDefence).GetComponent<SpriteRenderer>().color = _meleeImmuneColor;
-                        break;
-                    case DefenceType.RangedImmune:
-                        gameObject.transform.GetChild(currentDefence).GetComponent<SpriteRenderer>().color = _rangedImmuneColor;
-                        break;
-                    case DefenceType.MagicImmune:
-                        gameObject.transform.GetChild(currentDefence).GetComponent<SpriteRenderer>().color = _magicImmuneColor;
-                        break;
-                    default:
-                        break;
-                }
-                gameObject.transform.GetChild(currentDefence).gameObject.SetActive(true);
+                    defenceRow[currentDefence] = defenceType;
+                    //Set color to defencetype
+                    switch (defenceType)
+                    {
+                        case DefenceType.Normal:
+                            gameObject.transform.GetChild(currentDefence).GetComponent<SpriteRenderer>().color = _normalColor;
+                            break;
+                        case DefenceType.MeleeImmune:
+                            gameObject.transform.GetChild(currentDefence).GetComponent<SpriteRenderer>().color = _meleeImmuneColor;
+                            break;
+                        case DefenceType.RangedImmune:
+                            gameObject.transform.GetChild(currentDefence).GetComponent<SpriteRenderer>().color = _rangedImmuneColor;
+                            break;
+                        case DefenceType.MagicImmune:
+                            gameObject.transform.GetChild(currentDefence).GetComponent<SpriteRenderer>().color = _magicImmuneColor;
+                            break;
+                        default:
+                            break;
+                    }
+                    gameObject.transform.GetChild(currentDefence).gameObject.SetActive(true);
 
-                currentDefence++;
+                    currentDefence++;
+                }
             }
         }
 

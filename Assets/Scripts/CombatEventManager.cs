@@ -7,7 +7,7 @@ public class CombatEventManager : MonoBehaviour
 {
     //DamageEvent
     public delegate void DamageEvent(DefenceRow defenceRow, int damageAmount, DamageType damageType);
-    public static event DamageEvent DealDamageEvent;
+    public static event DamageEvent TakeDamageEvent;
     //DefenceEvent
     public delegate void DefenceEvent(DefenceRow defenceRow, int defenceAmount, DefenceType defenceType);
     public static event DefenceEvent AddDefenceEvent;
@@ -26,15 +26,15 @@ public class CombatEventManager : MonoBehaviour
     public static void DealDamage(DefenceRow defenceRow, int damageAmount, DamageType damageType = DamageType.Melee)
     {
         //Check if there are any subscribers on damageEvent before invoking it
-        if (DealDamageEvent != null)
+        if (TakeDamageEvent != null)
         {
-            DealDamageEvent.Invoke(defenceRow, damageAmount, damageType);
+            TakeDamageEvent.Invoke(defenceRow, damageAmount, damageType);
         }
     }
     public static void AddDefence(DefenceRow defenceRow, int defenceAmount, DefenceType defenceType = DefenceType.Normal)
     {
-        //Check if there are any subscribers on damageEvent before invoking it
-        if (DealDamageEvent != null)
+        //Check if there are any subscribers on defenceEvent before invoking it
+        if (AddDefenceEvent != null)
         {
             AddDefenceEvent.Invoke(defenceRow, defenceAmount, defenceType);
         }
