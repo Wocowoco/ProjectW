@@ -5,10 +5,23 @@ using static CombatEventManager;
 
 public class LifeNodeManager : MonoBehaviour
 {
-    public int StartingHealth;
-    public int StartingDefenceTop;
-    public int StartingDefenceMiddle;
-    public int StartingDefenceBottom;
+    [field: SerializeField]
+    public int StartingHealth { get; private set; }
+
+    [field: SerializeField]
+    public int StartingDefenceTop { get; private set; }
+
+    [field: SerializeField]
+    public int StartingDefenceMiddle { get; private set; }
+
+    [field: SerializeField]
+    public int StartingDefenceBottom { get; private set; }
+
+    [field: SerializeField]
+    public int StartingSpeed { get; private set; }
+
+    [field: SerializeField]
+    public EntityType Entity { get; private set; }
 
     private int _health;
 
@@ -57,10 +70,6 @@ public class LifeNodeManager : MonoBehaviour
         Health = StartingHealth;
         _hpText.text = Health.ToString();
 
-        _defenceTypesTop.AddDefence(DefenceType.MagicImmune);
-        _defenceTypesMiddle.AddDefence(DefenceType.RangedImmune);
-        _defenceTypesBottom.SwapDefenceType(2, DefenceType.MeleeImmune);
-
     }
 
 
@@ -82,39 +91,45 @@ public class LifeNodeManager : MonoBehaviour
         CombatEventManager.AddDefenceEvent -= AddDefence;
     }
 
-    public void TakeDamage(DefenceRow defenceRow, int amountOfDamage, DamageType damageType)
+    public void TakeDamage(EntityType entity, DefenceRow defenceRow, int amountOfDamage, DamageType damageType)
     {
-        switch (defenceRow)
+        if (Entity == entity)
         {
-            case DefenceRow.Top:
-                Health -= _defenceTypesTop.CalculateDamageReceived(amountOfDamage, damageType);
-                break;
-            case DefenceRow.Middle:
-                Health -= _defenceTypesMiddle.CalculateDamageReceived(amountOfDamage, damageType);
-                break;
-            case DefenceRow.Bottom:
-                Health -= _defenceTypesBottom.CalculateDamageReceived(amountOfDamage, damageType);
-                break;
-            default:
-                break;
+            switch (defenceRow)
+            {
+                case DefenceRow.Top:
+                    Health -= _defenceTypesTop.CalculateDamageReceived(amountOfDamage, damageType);
+                    break;
+                case DefenceRow.Middle:
+                    Health -= _defenceTypesMiddle.CalculateDamageReceived(amountOfDamage, damageType);
+                    break;
+                case DefenceRow.Bottom:
+                    Health -= _defenceTypesBottom.CalculateDamageReceived(amountOfDamage, damageType);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
-    public void AddDefence(DefenceRow defenceRow, int defenceAmount, DefenceType defenceType)
+    public void AddDefence(EntityType entity, DefenceRow defenceRow, int defenceAmount, DefenceType defenceType)
     {
-        switch (defenceRow)
+        if (Entity == entity)
         {
-            case DefenceRow.Top:
-                _defenceTypesTop.AddDefence(defenceType, defenceAmount);
-                break;
-            case DefenceRow.Middle:
-                _defenceTypesMiddle.AddDefence(defenceType, defenceAmount);
-                break;
-            case DefenceRow.Bottom:
-                _defenceTypesBottom.AddDefence(defenceType, defenceAmount);
-                break;
-            default:
-                break;
+            switch (defenceRow)
+            {
+                case DefenceRow.Top:
+                    _defenceTypesTop.AddDefence(defenceType, defenceAmount);
+                    break;
+                case DefenceRow.Middle:
+                    _defenceTypesMiddle.AddDefence(defenceType, defenceAmount);
+                    break;
+                case DefenceRow.Bottom:
+                    _defenceTypesBottom.AddDefence(defenceType, defenceAmount);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

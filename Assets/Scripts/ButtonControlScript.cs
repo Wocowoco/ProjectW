@@ -4,17 +4,17 @@ using static CombatEventManager;
 public class ButtonControlScript : MonoBehaviour
 {
     public int Amount;
-
     public DefenceRow DefenceRow;
+    public EntityType Target;
 
     public void DealDamage()
     {
-        CombatEventManager.DealDamage(DefenceRow, Amount);
+        CombatEventManager.DealDamage(Target, DefenceRow, Amount);
     }
 
     public void AddDefence()
     {
-        CombatEventManager.AddDefence(DefenceRow, Amount);
+        CombatEventManager.AddDefence(Target, DefenceRow, Amount);
     }
 
     public void DealRandomDamage()
@@ -38,7 +38,7 @@ public class ButtonControlScript : MonoBehaviour
             default:
                 break;
         }
-        CombatEventManager.DealDamage(defenceRow, damage);
+        CombatEventManager.DealDamage(Target, defenceRow, damage);
         Debug.Log($"Dealing {damage} melee damage to {defenceRow}.");
     }
 }

@@ -2075,7 +2075,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0.33, y: 0.5}
-  m_AnchoredPosition: {x: 0.66, y: 0.51}
+  m_AnchoredPosition: {x: 0.66, y: 0.6}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7771304187958514212
@@ -2504,7 +2504,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0.33, y: 0.5}
-  m_AnchoredPosition: {x: 0.66, y: -0.51}
+  m_AnchoredPosition: {x: 0.66, y: -0.6}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5093732350312793372
@@ -2724,7 +2724,7 @@ GameObject:
   - component: {fileID: 8431859134694426598}
   - component: {fileID: 8431859134694426593}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: HpCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2824,7 +2824,7 @@ GameObject:
   - component: {fileID: 8431859135903545189}
   - component: {fileID: 8431859135903545188}
   m_Layer: 5
-  m_Name: HPText
+  m_Name: HpText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3080,8 +3080,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af5d9f6a9ce3e8a45a27fcc3368adde6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartingHealth: 0
-  StartingDefence: 3
+  <StartingHealth>k__BackingField: 10
+  <StartingDefenceTop>k__BackingField: 3
+  <StartingDefenceMiddle>k__BackingField: 8
+  <StartingDefenceBottom>k__BackingField: 5
+  <StartingSpeed>k__BackingField: 5
+  <Entity>k__BackingField: 0
 --- !u!1 &9062590840688252828
 GameObject:
   m_ObjectHideFlags: 0
