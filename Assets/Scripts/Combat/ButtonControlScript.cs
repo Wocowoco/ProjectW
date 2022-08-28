@@ -44,6 +44,6 @@ public class ButtonControlScript : MonoBehaviour
 
     public void EndTurn()
     {
-        CombatEventManager.EndTurn();
+        CombatEventManager.EndTurn(Target);
     }
 }
