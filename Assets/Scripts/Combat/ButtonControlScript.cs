@@ -41,4 +41,9 @@ public class ButtonControlScript : MonoBehaviour
         CombatEventManager.DealDamage(Target, defenceRow, damage);
         Debug.Log($"Dealing {damage} melee damage to {defenceRow}.");
     }
+
+    public void EndTurn()
+    {
+        CombatEventManager.EndTurn();
+    }
 }

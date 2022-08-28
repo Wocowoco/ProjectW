@@ -11,6 +11,10 @@ public class CombatEventManager : MonoBehaviour
     //DefenceEvent
     public delegate void DefenceEvent(EntityType targetEntity, DefenceRow defenceRow, int defenceAmount, DefenceType defenceType);
     public static event DefenceEvent AddDefenceEvent;
+    //EndTurnEvent
+    public delegate void TurnEvent();
+    public static event TurnEvent StartTurnEvent;
+    public static event TurnEvent EndTurnEvent;
 
     //LifeNodeManagers
     private LifeNodeManager playerLifeNode;
@@ -32,12 +36,17 @@ public class CombatEventManager : MonoBehaviour
         _combatants.Sort();
         playerLifeNode.Initialize(player);
         enemyLifeNode.Initialize(enemy);
+
+        AddDefence(EntityType.Enemy, DefenceRow.Bottom, 2, DefenceType.MeleeImmune);
+
+
+        EndTurnEvent += IncreaseTurnCounter;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
 
@@ -57,6 +66,30 @@ public class CombatEventManager : MonoBehaviour
             AddDefenceEvent.Invoke(targetEntity, defenceRow, defenceAmount, defenceType);
         }
     }
+
+    public static void EndTurn()
+    {
+        //Check if there are any subscribers
+        if (EndTurnEvent != null)
+        {
+            EndTurnEvent.Invoke();
+        }
+    }
+
+
+    private void IncreaseTurnCounter()
+    {
+        Debug.Log($"Round {_round}, turn {_turn} ended. ({_combatants[_turn].EntityType})");
+        _turn++;
+        if (_turn == _combatants.Count)
+        {
+            _round++;
+            //Logic for a new round
+            _turn = 0;
+        }
+
+    }
+
 
     public enum DefenceRow
     {

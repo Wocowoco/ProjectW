@@ -74,7 +74,7 @@ public class LifeNodeManager : MonoBehaviour
         CombatEventManager.AddDefenceEvent -= AddDefence;
     }
 
-    public void TakeDamage(EntityType entityType, DefenceRow defenceRow, int amountOfDamage, DamageType damageType)
+    private void TakeDamage(EntityType entityType, DefenceRow defenceRow, int amountOfDamage, DamageType damageType)
     {
         if (Entity.EntityType == entityType)
         {
@@ -95,7 +95,7 @@ public class LifeNodeManager : MonoBehaviour
         }
     }
 
-    public void AddDefence(EntityType entityType, DefenceRow defenceRow, int defenceAmount, DefenceType defenceType)
+    private void AddDefence(EntityType entityType, DefenceRow defenceRow, int defenceAmount, DefenceType defenceType)
     {
         if (Entity.EntityType == entityType)
         {
