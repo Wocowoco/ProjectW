@@ -40,12 +40,9 @@ public class CombatEventManager : MonoBehaviour
         enemyLifeNode.Initialize(enemy);
 
         AddDefence(EntityType.Enemy, DefenceRow.Bottom, 2, DefenceType.MeleeImmune);
-
-
         EndTurnEvent += IncreaseTurnCounter;
-        StartTurnEvent.Invoke(_combatants[_turn].EntityType);
+        StartTurn(_combatants[_turn].EntityType);
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -82,6 +79,7 @@ public class CombatEventManager : MonoBehaviour
 
     public static void StartTurn(EntityType combatant)
     {
+        Debug.Log($"Starting {combatant}'s turn.");
         //Check if there are any subscribers
         if (StartTurnEvent != null)
         {
@@ -103,7 +101,7 @@ public class CombatEventManager : MonoBehaviour
                 _turn = 0;
             }
             //Start next combatants turn
-            StartTurnEvent.Invoke(_combatants[_turn].EntityType);
+            StartTurn(_combatants[_turn].EntityType);
         }
         else
         {

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using static CombatEventManager;
 
 public class ButtonControlScript : MonoBehaviour
@@ -7,6 +8,34 @@ public class ButtonControlScript : MonoBehaviour
     public DefenceRow DefenceRow;
     public EntityType Target;
 
+
+    private void OnEnable()
+    {
+        Debug.Log($"{this.transform.name} loaded.");
+        CombatEventManager.StartTurnEvent += PlayerTurnStart;
+        CombatEventManager.EndTurnEvent += PlayerTurnEnd;
+    }
+
+    private void OnDisable()
+    {
+        CombatEventManager.StartTurnEvent -= PlayerTurnStart;
+        CombatEventManager.EndTurnEvent -= PlayerTurnEnd;
+    }
+
+    private void PlayerTurnStart(EntityType entity)
+    {
+        if (entity == EntityType.Player)
+        {
+            this.transform.GetComponent<Button>().interactable = true;
+        }
+    }
+    private void PlayerTurnEnd(EntityType entity)
+    {
+        if (entity == EntityType.Player)
+        {
+            this.transform.GetComponent<Button>().interactable = false;
+        }
+    }
     public void DealDamage()
     {
         CombatEventManager.DealDamage(Target, DefenceRow, Amount);
