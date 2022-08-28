@@ -5,25 +5,8 @@ using static CombatEventManager;
 
 public class LifeNodeManager : MonoBehaviour
 {
-    [field: SerializeField]
-    public int StartingHealth { get; private set; }
-
-    [field: SerializeField]
-    public int StartingDefenceTop { get; private set; }
-
-    [field: SerializeField]
-    public int StartingDefenceMiddle { get; private set; }
-
-    [field: SerializeField]
-    public int StartingDefenceBottom { get; private set; }
-
-    [field: SerializeField]
-    public int StartingSpeed { get; private set; }
-
-    [field: SerializeField]
-    public EntityType Entity { get; private set; }
-
-    private int _health;
+    //[field: SerializeField]
+    public CombatEntity Entity;
 
     private DefenceTypeRow _defenceTypesTop;
     private DefenceTypeRow _defenceTypesMiddle;
@@ -39,37 +22,37 @@ public class LifeNodeManager : MonoBehaviour
     private GameObject _defenceRowBottomObject;
 
     private TextMeshProUGUI _hpText;
+
     public int Health
     {
-        get { return _health; }
+        get { return Entity.CurrentHealth; }
         set
         {
-            if (value >= 0)
+            if (value >= 0 && value <= Entity.MaxHealth)
             {
-                _health = value;
+                Entity.CurrentHealth = value;
             }
             else
             {
-                _health = 0;
+                Entity.CurrentHealth = 0;
             }
-
             _hpText.text = Health.ToString();
         }
     }
 
-    void Start()
+    public void Initialize(CombatEntity entity)
     {
         //Init
+        Entity = entity;
         _hpText = this.transform.Find("HpCanvas").Find("HpText").gameObject.GetComponent<TextMeshProUGUI>();
         _defenceRowTopObject = this.transform.Find("DefenceRowTop").gameObject;
         _defenceRowMiddleObject = this.transform.Find("DefenceRowMiddle").gameObject;
         _defenceRowBottomObject = this.transform.Find("DefenceRowBottom").gameObject;
-        _defenceTypesTop = new DefenceTypeRow(_defenceRowTopObject, StartingDefenceTop);
-        _defenceTypesMiddle = new DefenceTypeRow(_defenceRowMiddleObject, StartingDefenceMiddle);
-        _defenceTypesBottom = new DefenceTypeRow(_defenceRowBottomObject, StartingDefenceBottom);
-        Health = StartingHealth;
+        _defenceTypesTop = new DefenceTypeRow(_defenceRowTopObject, Entity.StartingDefenceTop);
+        _defenceTypesMiddle = new DefenceTypeRow(_defenceRowMiddleObject, Entity.StartingDefenceMiddle);
+        _defenceTypesBottom = new DefenceTypeRow(_defenceRowBottomObject, Entity.StartingDefenceBottom);
+        Health = Entity.CurrentHealth;
         _hpText.text = Health.ToString();
-
     }
 
 
@@ -91,9 +74,9 @@ public class LifeNodeManager : MonoBehaviour
         CombatEventManager.AddDefenceEvent -= AddDefence;
     }
 
-    public void TakeDamage(EntityType entity, DefenceRow defenceRow, int amountOfDamage, DamageType damageType)
+    public void TakeDamage(EntityType entityType, DefenceRow defenceRow, int amountOfDamage, DamageType damageType)
     {
-        if (Entity == entity)
+        if (Entity.EntityType == entityType)
         {
             switch (defenceRow)
             {
@@ -112,9 +95,9 @@ public class LifeNodeManager : MonoBehaviour
         }
     }
 
-    public void AddDefence(EntityType entity, DefenceRow defenceRow, int defenceAmount, DefenceType defenceType)
+    public void AddDefence(EntityType entityType, DefenceRow defenceRow, int defenceAmount, DefenceType defenceType)
     {
-        if (Entity == entity)
+        if (Entity.EntityType == entityType)
         {
             switch (defenceRow)
             {
@@ -135,10 +118,11 @@ public class LifeNodeManager : MonoBehaviour
 
     public void ResetStats()
     {
-        Health = StartingHealth;
-        _defenceTypesTop = new DefenceTypeRow(_defenceRowTopObject, StartingDefenceTop);
-        _defenceTypesMiddle = new DefenceTypeRow(_defenceRowMiddleObject, StartingDefenceMiddle);
-        _defenceTypesBottom = new DefenceTypeRow(_defenceRowBottomObject, StartingDefenceBottom);
+        Health = Entity.MaxHealth;
+        _defenceTypesTop = new DefenceTypeRow(_defenceRowTopObject, Entity.StartingDefenceTop);
+        _defenceTypesMiddle = new DefenceTypeRow(_defenceRowMiddleObject, Entity.StartingDefenceMiddle);
+        _defenceTypesBottom = new DefenceTypeRow(_defenceRowBottomObject, Entity.StartingDefenceBottom);
+
     }
 
 

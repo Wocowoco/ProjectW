@@ -3080,12 +3080,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af5d9f6a9ce3e8a45a27fcc3368adde6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <StartingHealth>k__BackingField: 10
-  <StartingDefenceTop>k__BackingField: 3
-  <StartingDefenceMiddle>k__BackingField: 8
-  <StartingDefenceBottom>k__BackingField: 5
-  <StartingSpeed>k__BackingField: 5
-  <Entity>k__BackingField: 0
+  AllowedEntity_Type: 0
 --- !u!1 &9062590840688252828
 GameObject:
   m_ObjectHideFlags: 0
