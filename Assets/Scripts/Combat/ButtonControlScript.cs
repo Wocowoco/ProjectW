@@ -68,9 +68,28 @@ public class ButtonControlScript : MonoBehaviour
                 break;
         }
         CombatEventManager.DealDamage(Target, defenceRow, damage);
-        Debug.Log($"Dealing {damage} melee damage to {defenceRow}.");
     }
 
+    public void DealDamageRandomRow()
+    {
+        DefenceRow defenceRow = DefenceRow.Top;
+        int row = Random.Range(1, 4);
+        switch (row)
+        {
+            case 1:
+                defenceRow = DefenceRow.Top;
+                break;
+            case 2:
+                defenceRow = DefenceRow.Middle;
+                break;
+            case 3:
+                defenceRow = DefenceRow.Bottom;
+                break;
+            default:
+                break;
+        }
+        CombatEventManager.DealDamage(Target, defenceRow, Amount);
+    }
     public void EndTurn()
     {
         CombatEventManager.EndTurn(Target);

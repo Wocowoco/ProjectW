@@ -8,11 +8,9 @@ namespace Assets.Scripts.Combat.EnemyAI
     {
 
         protected EntityType _myEntityType = EntityType.Enemy;
-        protected LifeNodeManager _PlayerLifeNode;
 
         private void OnEnable()
         {
-            _PlayerLifeNode = transform.Find("PlayerLifeNode").GetComponent<LifeNodeManager>();
             CombatEventManager.StartTurnEvent += StartTurn; 
         }
 
@@ -27,7 +25,7 @@ namespace Assets.Scripts.Combat.EnemyAI
         {
             if (entityType == _myEntityType)
             {
-                StartCoroutine(Wait(0));
+                StartCoroutine(Wait(1));
             }
         }
         private void EndTurn()

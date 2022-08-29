@@ -1,9 +1,11 @@
 using Assets.Scripts.Combat.EnemyAI;
+using JetBrains.Annotations;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CombatEventManager : MonoBehaviour
 {
+    public static DefenceObjects DefenceObjects;
 
     //DamageEvent
     public delegate void DamageEvent(EntityType targetEntity, DefenceRow defenceRow, int damageAmount, DamageType damageType);
@@ -31,7 +33,8 @@ public class CombatEventManager : MonoBehaviour
     void Start()
     {
         this.gameObject.AddComponent<MeleeBottomAI>();
-        CombatEntity player = new(5, 5, 5, 5, 5, 5, EntityType.Player);
+        DefenceObjects = this.transform.GetComponent<DefenceObjects>();
+        CombatEntity player = new(5, 5, 5, 2, 1, 3, EntityType.Player);
         CombatEntity enemy = new(3, 3, 3, 1, 1, 1);
         _combatants.Add(player);
         InitializeLifeNode(player);
@@ -39,7 +42,8 @@ public class CombatEventManager : MonoBehaviour
         InitializeLifeNode(enemy);
         _combatants.Sort();
 
-        AddDefence(EntityType.Enemy, DefenceRow.Bottom, 2, DefenceType.MeleeImmune);
+        AddDefence(EntityType.Player, DefenceRow.Top, 2, DefenceType.MeleeImmune);
+
         EndTurnEvent += IncreaseTurnCounter;
         StartTurn(_combatants[_turn].EntityType);
     }
