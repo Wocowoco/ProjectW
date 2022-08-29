@@ -6,10 +6,13 @@ namespace Assets.Scripts.Combat.EnemyAI
 {
     public abstract class EnemyAI : MonoBehaviour
     {
+
         protected EntityType _myEntityType = EntityType.Enemy;
+        protected LifeNodeManager _PlayerLifeNode;
 
         private void OnEnable()
         {
+            _PlayerLifeNode = transform.Find("PlayerLifeNode").GetComponent<LifeNodeManager>();
             CombatEventManager.StartTurnEvent += StartTurn; 
         }
 
@@ -24,7 +27,7 @@ namespace Assets.Scripts.Combat.EnemyAI
         {
             if (entityType == _myEntityType)
             {
-                StartCoroutine(Wait(3));
+                StartCoroutine(Wait(0));
             }
         }
         private void EndTurn()

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CombatEventManager : MonoBehaviour
 {
+
     //DamageEvent
     public delegate void DamageEvent(EntityType targetEntity, DefenceRow defenceRow, int damageAmount, DamageType damageType);
     public static event DamageEvent TakeDamageEvent;
@@ -17,27 +18,26 @@ public class CombatEventManager : MonoBehaviour
     public static event TurnEvent StartTurnEvent;
     public static event TurnEvent EndTurnEvent;
 
+    //InitializeEvent
+    public delegate void InitializeEvent(CombatEntity combatant);
+    public static event InitializeEvent InitializeLifeNodeEvent;
 
-    private LifeNodeManager playerLifeNode;
-    private LifeNodeManager enemyLifeNode;
     private List<CombatEntity> _combatants = new List<CombatEntity>();
-    //private EnemyAI enemyAI;
+
     private int _turn = 0;
     private int _round = 0;
 
 
     void Start()
     {
-        playerLifeNode = transform.GetChild(0).GetComponent<LifeNodeManager>();
-        enemyLifeNode = transform.GetChild(1).GetComponent<LifeNodeManager>();
         this.gameObject.AddComponent<MeleeBottomAI>();
-        CombatEntity player = new(5, 5, 5, 0, 1, 1, EntityType.Player);
+        CombatEntity player = new(5, 5, 5, 5, 5, 5, EntityType.Player);
         CombatEntity enemy = new(3, 3, 3, 1, 1, 1);
         _combatants.Add(player);
+        InitializeLifeNode(player);
         _combatants.Add(enemy);
+        InitializeLifeNode(enemy);
         _combatants.Sort();
-        playerLifeNode.Initialize(player);
-        enemyLifeNode.Initialize(enemy);
 
         AddDefence(EntityType.Enemy, DefenceRow.Bottom, 2, DefenceType.MeleeImmune);
         EndTurnEvent += IncreaseTurnCounter;
@@ -48,7 +48,6 @@ public class CombatEventManager : MonoBehaviour
     {
 
     }
-
 
     public static void DealDamage(EntityType targetEntity, DefenceRow defenceRow, int damageAmount, DamageType damageType = DamageType.Melee)
     {
@@ -87,6 +86,15 @@ public class CombatEventManager : MonoBehaviour
         }
     }
 
+    public static void InitializeLifeNode(CombatEntity combatant)
+    {
+        //Check if there are any subscribers
+        if (InitializeLifeNodeEvent != null)
+        {
+            InitializeLifeNodeEvent.Invoke(combatant);
+        }
+    }
+
     private void IncreaseTurnCounter(EntityType combatant)
     {
         //Check if the endturn event came from the combatant whose turn it was, otherwise ignore the event.
@@ -109,7 +117,6 @@ public class CombatEventManager : MonoBehaviour
         }
 
     }
-
 
     public enum DefenceRow
     {

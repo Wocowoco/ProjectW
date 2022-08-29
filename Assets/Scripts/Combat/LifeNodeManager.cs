@@ -8,6 +8,9 @@ public class LifeNodeManager : MonoBehaviour
     //[field: SerializeField]
     public CombatEntity Entity;
 
+    [SerializeField]
+    private EntityType EntityType;
+
     private DefenceTypeRow _defenceTypesTop;
     private DefenceTypeRow _defenceTypesMiddle;
     private DefenceTypeRow _defenceTypesBottom;
@@ -40,19 +43,21 @@ public class LifeNodeManager : MonoBehaviour
         }
     }
 
-    public void Initialize(CombatEntity entity)
+    public void Initialize(CombatEntity combatant)
     {
-        //Init
-        Entity = entity;
-        _hpText = this.transform.Find("HpCanvas").Find("HpText").gameObject.GetComponent<TextMeshProUGUI>();
-        _defenceRowTopObject = this.transform.Find("DefenceRowTop").gameObject;
-        _defenceRowMiddleObject = this.transform.Find("DefenceRowMiddle").gameObject;
-        _defenceRowBottomObject = this.transform.Find("DefenceRowBottom").gameObject;
-        _defenceTypesTop = new DefenceTypeRow(_defenceRowTopObject, Entity.StartingDefenceTop);
-        _defenceTypesMiddle = new DefenceTypeRow(_defenceRowMiddleObject, Entity.StartingDefenceMiddle);
-        _defenceTypesBottom = new DefenceTypeRow(_defenceRowBottomObject, Entity.StartingDefenceBottom);
-        Health = Entity.CurrentHealth;
-        _hpText.text = Health.ToString();
+        if (combatant.EntityType == EntityType)
+        {
+            Entity = combatant;
+            _hpText = this.transform.Find("HpCanvas").Find("HpText").gameObject.GetComponent<TextMeshProUGUI>();
+            _defenceRowTopObject = this.transform.Find("DefenceRowTop").gameObject;
+            _defenceRowMiddleObject = this.transform.Find("DefenceRowMiddle").gameObject;
+            _defenceRowBottomObject = this.transform.Find("DefenceRowBottom").gameObject;
+            _defenceTypesTop = new DefenceTypeRow(_defenceRowTopObject, Entity.StartingDefenceTop);
+            _defenceTypesMiddle = new DefenceTypeRow(_defenceRowMiddleObject, Entity.StartingDefenceMiddle);
+            _defenceTypesBottom = new DefenceTypeRow(_defenceRowBottomObject, Entity.StartingDefenceBottom);
+            Health = Entity.CurrentHealth;
+            _hpText.text = Health.ToString();
+        }
     }
 
 
@@ -66,12 +71,14 @@ public class LifeNodeManager : MonoBehaviour
     {
         CombatEventManager.TakeDamageEvent += TakeDamage;
         CombatEventManager.AddDefenceEvent += AddDefence;
+        CombatEventManager.InitializeLifeNodeEvent += Initialize;
     }
 
     private void OnDisable()
     {
         CombatEventManager.TakeDamageEvent -= TakeDamage;
         CombatEventManager.AddDefenceEvent -= AddDefence;
+        CombatEventManager.InitializeLifeNodeEvent -= Initialize;
     }
 
     private void TakeDamage(EntityType entityType, DefenceRow defenceRow, int amountOfDamage, DamageType damageType)
