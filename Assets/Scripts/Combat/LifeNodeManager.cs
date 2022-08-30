@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using static CombatEventManager;
 
@@ -20,9 +21,7 @@ public class LifeNodeManager : MonoBehaviour
     private static Color _magicImmuneColor = Color.blue;
     private static Color _rangedImmuneColor = Color.green;
 
-    private GameObject _defenceRowTopObject;
-    private GameObject _defenceRowMiddleObject;
-    private GameObject _defenceRowBottomObject;
+    private List<EntityType> _intentList = new();
 
     private TextMeshProUGUI _hpText;
 
@@ -50,12 +49,13 @@ public class LifeNodeManager : MonoBehaviour
             Entity = combatant;
             _hpText = this.transform.Find("HpCanvas").Find("HpText").gameObject.GetComponent<TextMeshProUGUI>();
             Transform defenceRows = this.transform.Find("DefenceRows");
-            _defenceRowTopObject = defenceRows.Find("DefenceRowTop").gameObject;
-            _defenceRowMiddleObject = defenceRows.Find("DefenceRowMiddle").gameObject;
-            _defenceRowBottomObject = defenceRows.Find("DefenceRowBottom").gameObject;
-            _defenceTypesTop = new DefenceTypeRow(_defenceRowTopObject, Entity.StartingDefenceTop);
-            _defenceTypesMiddle = new DefenceTypeRow(_defenceRowMiddleObject, Entity.StartingDefenceMiddle);
-            _defenceTypesBottom = new DefenceTypeRow(_defenceRowBottomObject, Entity.StartingDefenceBottom);
+            _defenceTypesTop = defenceRows.Find("DefenceRowTop").AddComponent<DefenceTypeRow>();
+            _defenceTypesTop.Initialize(Entity.StartingDefenceTop);
+            _defenceTypesMiddle = defenceRows.Find("DefenceRowMiddle").AddComponent<DefenceTypeRow>();
+            _defenceTypesMiddle.Initialize(Entity.StartingDefenceMiddle);
+            _defenceTypesBottom = defenceRows.Find("DefenceRowBottom").AddComponent<DefenceTypeRow>();
+            _defenceTypesBottom.Initialize(Entity.StartingDefenceBottom);
+
             Health = Entity.CurrentHealth;
             _hpText.text = Health.ToString();
 
@@ -77,6 +77,7 @@ public class LifeNodeManager : MonoBehaviour
         CombatEventManager.TakeDamageEvent += TakeDamage;
         CombatEventManager.AddDefenceEvent += AddDefence;
         CombatEventManager.InitializeLifeNodeEvent += Initialize;
+        CombatEventManager.EnemyIntentEvent += IdentifyEnemyIntent;
     }
 
     private void OnDisable()
@@ -84,11 +85,21 @@ public class LifeNodeManager : MonoBehaviour
         CombatEventManager.TakeDamageEvent -= TakeDamage;
         CombatEventManager.AddDefenceEvent -= AddDefence;
         CombatEventManager.InitializeLifeNodeEvent -= Initialize;
+        CombatEventManager.EnemyIntentEvent -= IdentifyEnemyIntent;
     }
 
-    private void TakeDamage(EntityType entityType, DefenceRow defenceRow, int amountOfDamage, DamageType damageType)
+    private void TakeDamage(EntityType originEntity, EntityType targetEntity, DefenceRow defenceRow, int amountOfDamage, DamageType damageType)
     {
-        if (Entity.EntityType == entityType)
+        //Check if the entity already has an intent, if so, delete the old intent.
+        if (_intentList.Contains(originEntity))
+        {
+            _intentList.Remove(originEntity);
+            _defenceTypesTop.DestroyIntent(originEntity);
+            _defenceTypesMiddle.DestroyIntent(originEntity);
+            _defenceTypesBottom.DestroyIntent(originEntity);
+
+        }
+        if (Entity.EntityType == targetEntity)
         {
             switch (defenceRow)
             {
@@ -107,20 +118,20 @@ public class LifeNodeManager : MonoBehaviour
         }
     }
 
-    private void AddDefence(EntityType entityType, DefenceRow defenceRow, int defenceAmount, DefenceType defenceType)
+    private void AddDefence(EntityType originEntity, EntityType targetEntity, DefenceRow defenceRow, int defenceAmount, DefenceType defenceType)
     {
-        if (Entity.EntityType == entityType)
+        if (Entity.EntityType == targetEntity)
         {
             switch (defenceRow)
             {
                 case DefenceRow.Top:
-                    _defenceTypesTop.AddDefence(defenceType, defenceAmount);
+                    _defenceTypesTop.AddDefence(defenceAmount, defenceType);
                     break;
                 case DefenceRow.Middle:
-                    _defenceTypesMiddle.AddDefence(defenceType, defenceAmount);
+                    _defenceTypesMiddle.AddDefence(defenceAmount, defenceType);
                     break;
                 case DefenceRow.Bottom:
-                    _defenceTypesBottom.AddDefence(defenceType, defenceAmount);
+                    _defenceTypesBottom.AddDefence(defenceAmount, defenceType);
                     break;
                 default:
                     break;
@@ -128,162 +139,46 @@ public class LifeNodeManager : MonoBehaviour
         }
     }
 
+    private void IdentifyEnemyIntent(EnemyIntent intent)
+    {
+        //Check if the entity already has an intent, if so, delete the old intent.
+        if (_intentList.Contains(intent.OriginEntity))
+        {
+            _defenceTypesTop.DestroyIntent(intent.OriginEntity);
+            _defenceTypesMiddle.DestroyIntent(intent.OriginEntity);
+            _defenceTypesBottom.DestroyIntent(intent.OriginEntity);
+            _intentList.Remove(intent.OriginEntity);
+        }
+        if (Entity.EntityType == intent.TargetEntity)
+        {
+            _intentList.Add(intent.OriginEntity);
+            if (intent.GetType() == typeof(EnemyAttackIntent))
+            {
+                EnemyAttackIntent attackIntent = (EnemyAttackIntent)intent;
+                switch (attackIntent.DefenceRow)
+                {
+                    case DefenceRow.Top:
+                        _defenceTypesTop.CreateDamageIntent(attackIntent.OriginEntity ,attackIntent.Damage, attackIntent.DamageType);
+                        break;
+                    case DefenceRow.Middle:
+                        _defenceTypesMiddle.CreateDamageIntent(attackIntent.OriginEntity, attackIntent.Damage, attackIntent.DamageType);
+                        break;
+                    case DefenceRow.Bottom:
+                        _defenceTypesBottom.CreateDamageIntent(attackIntent.OriginEntity, attackIntent.Damage, attackIntent.DamageType);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
     public void ResetStats()
     {
         Health = Entity.MaxHealth;
-        _defenceTypesTop = new DefenceTypeRow(_defenceRowTopObject, Entity.StartingDefenceTop);
-        _defenceTypesMiddle = new DefenceTypeRow(_defenceRowMiddleObject, Entity.StartingDefenceMiddle);
-        _defenceTypesBottom = new DefenceTypeRow(_defenceRowBottomObject, Entity.StartingDefenceBottom);
-
+        _defenceTypesTop.Initialize(Entity.StartingDefenceTop);
+        _defenceTypesMiddle.Initialize(Entity.StartingDefenceMiddle);
+        _defenceTypesBottom.Initialize(Entity.StartingDefenceBottom);
     }
-
-
-    public class DefenceTypeRow
-    {
-        private readonly int maxDefence = 10;
-        private List<DefenceType> defenceRow = new List<DefenceType>();
-        private int currentDefence = 0;
-        private readonly GameObject gameObject;
-
-        public DefenceTypeRow(GameObject obj, int amount)
-        {
-            gameObject = obj;
-            //Fill all defence slots
-            for (int i = 0; i < maxDefence; i++)
-            {
-                defenceRow.Add(DefenceType.None);
-            }
-            //visually add defence
-            for (int i = 0; i < amount; i++)
-            {
-                AddDefence(DefenceType.Normal);
-            }
-        }
-
-        public void AddDefence(DefenceType defenceType, int defenceAmount = 1)
-        {
-            for (int i = 0; i < defenceAmount; i++)
-            {
-                GameObject defenceObject = null;
-
-                //Only add defence is it is not maxed yet
-                if (currentDefence < maxDefence)
-                {
-                    defenceRow[currentDefence] = defenceType;
-                    //Set color to defencetype
-                    switch (defenceType)
-                    {
-                        case DefenceType.MeleeImmune:
-                            defenceObject = CombatEventManager.DefenceObjects.MeleeImmune;
-                            break;
-                        case DefenceType.RangedImmune:
-                            defenceObject = CombatEventManager.DefenceObjects.RangedImmune;
-                            break;
-                        case DefenceType.MagicImmune:
-                            defenceObject = CombatEventManager.DefenceObjects.MagicImmune;
-                            break;
-                        default:
-                            defenceObject = CombatEventManager.DefenceObjects.NormalDefence;
-                            break;
-                    }
-
-                    Instantiate(defenceObject, this.gameObject.transform);
-                    currentDefence++;
-                }
-            }
-        }
-
-        void RemoveDefence()
-        {
-            if (currentDefence > 0)
-            {
-                currentDefence--;
-
-                defenceRow[currentDefence] = DefenceType.None;
-                Destroy(gameObject.transform.GetChild(currentDefence).gameObject);
-            }
-        }
-
-        public void SwapDefenceType(int position, DefenceType defenceType)
-        {
-            if (defenceRow[position] != DefenceType.None)
-            {
-                SpriteRenderer spriteRender = gameObject.transform.GetChild(position).GetComponent<SpriteRenderer>();
-                switch (defenceType)
-                {
-                    case DefenceType.MeleeImmune:
-                        defenceRow[position] = DefenceType.MeleeImmune;
-                        spriteRender.sprite = CombatEventManager.DefenceObjects.MeleeImmune.GetComponent<SpriteRenderer>().sprite;
-                        break;
-                    case DefenceType.RangedImmune:
-                        defenceRow[position] = DefenceType.RangedImmune;
-                        spriteRender.sprite = CombatEventManager.DefenceObjects.RangedImmune.GetComponent<SpriteRenderer>().sprite;
-                        break;
-                    case DefenceType.MagicImmune:
-                        defenceRow[position] = DefenceType.MagicImmune;
-                        spriteRender.sprite = CombatEventManager.DefenceObjects.MagicImmune.GetComponent<SpriteRenderer>().sprite;
-                        break;
-                    default:
-                        defenceRow[position] = DefenceType.Normal;
-                        spriteRender.sprite = CombatEventManager.DefenceObjects.NormalDefence.GetComponent<SpriteRenderer>().sprite;
-                        break;
-                }
-            }
-            else
-            {
-                Debug.LogWarning("Trying to swap defence slot that is currently not in use.");
-            }
-        }
-
-        public int CalculateDamageReceived(int amountOfDamage, DamageType damageType)
-        {
-            int damageReceived = 0;
-
-            //Check damage for each point of damage received
-            for (int i = 0; i < amountOfDamage; i++)
-            {
-                //If defence is present, receive damage there first
-                if (currentDefence > 0)
-                {
-                    var defenceType = defenceRow[currentDefence-1];
-
-                    //Check melee
-                    switch (defenceType)
-                    {
-                        case DefenceType.MeleeImmune:
-                            if (damageType != DamageType.Melee)
-                            {
-                                RemoveDefence();
-                            }
-                            break;
-                        case DefenceType.RangedImmune:
-                            if (damageType != DamageType.Ranged)
-                            {
-                                RemoveDefence();
-                            }
-                            break;
-                        case DefenceType.MagicImmune:
-                            if (damageType != DamageType.Magic)
-                            {
-                                RemoveDefence();
-                            }
-                            break;
-                        default:
-                            RemoveDefence();
-                            break;
-                    }
-                }
-                else
-                {
-                    damageReceived++;
-                }
-            }
-
-            return damageReceived;
-        }
-
-    }
-
-
 
 }

@@ -1,18 +1,21 @@
 using Assets.Scripts.Combat.EnemyAI;
 using JetBrains.Annotations;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
+using static CombatEventManager;
 
 public class CombatEventManager : MonoBehaviour
 {
     public static DefenceObjects DefenceObjects;
 
     //DamageEvent
-    public delegate void DamageEvent(EntityType targetEntity, DefenceRow defenceRow, int damageAmount, DamageType damageType);
+    public delegate void DamageEvent(EntityType originEntity, EntityType targetEntity, DefenceRow defenceRow, int damageAmount, DamageType damageType);
     public static event DamageEvent TakeDamageEvent;
 
+
     //DefenceEvent
-    public delegate void DefenceEvent(EntityType targetEntity, DefenceRow defenceRow, int defenceAmount, DefenceType defenceType);
+    public delegate void DefenceEvent(EntityType originEntity, EntityType targetEntity, DefenceRow defenceRow, int defenceAmount, DefenceType defenceType);
     public static event DefenceEvent AddDefenceEvent;
 
     //TurnEvent
@@ -23,6 +26,11 @@ public class CombatEventManager : MonoBehaviour
     //InitializeEvent
     public delegate void InitializeEvent(CombatEntity combatant);
     public static event InitializeEvent InitializeLifeNodeEvent;
+
+    //IntentEvents
+    public delegate void IntentEvent(EnemyIntent intent);
+    public static event IntentEvent EnemyIntentEvent;
+
 
     private List<CombatEntity> _combatants = new List<CombatEntity>();
 
@@ -42,7 +50,7 @@ public class CombatEventManager : MonoBehaviour
         InitializeLifeNode(enemy);
         _combatants.Sort();
 
-        AddDefence(EntityType.Player, DefenceRow.Top, 2, DefenceType.MeleeImmune);
+        //AddDefence(EntityType.Player, DefenceRow.Top, 2, DefenceType.MeleeImmune);
 
         EndTurnEvent += IncreaseTurnCounter;
         StartTurn(_combatants[_turn].EntityType);
@@ -53,21 +61,29 @@ public class CombatEventManager : MonoBehaviour
 
     }
 
-    public static void DealDamage(EntityType targetEntity, DefenceRow defenceRow, int damageAmount, DamageType damageType = DamageType.Melee)
+    public static void DealDamage(EntityType originEntity, EntityType targetEntity, DefenceRow defenceRow, int damageAmount, DamageType damageType = DamageType.Melee)
     {
         //Check if there are any subscribers on damageEvent before invoking it
         if (TakeDamageEvent != null)
         {
-            Debug.Log($"Dealing {damageAmount} {damageType} damage to {targetEntity} on the {defenceRow} row.");
-            TakeDamageEvent.Invoke(targetEntity, defenceRow, damageAmount, damageType);
+            Debug.Log($"{originEntity} is dealing {damageAmount} {damageType} damage to {targetEntity} on the {defenceRow} row.");
+            TakeDamageEvent.Invoke(originEntity, targetEntity, defenceRow, damageAmount, damageType);
         }
     }
-    public static void AddDefence(EntityType targetEntity, DefenceRow defenceRow, int defenceAmount, DefenceType defenceType = DefenceType.Normal)
+    public static void AddDefence(EntityType originEntity, EntityType targetEntity, DefenceRow defenceRow, int defenceAmount, DefenceType defenceType = DefenceType.Normal)
     {
         //Check if there are any subscribers on defenceEvent before invoking it
         if (AddDefenceEvent != null)
         {
-            AddDefenceEvent.Invoke(targetEntity, defenceRow, defenceAmount, defenceType);
+            AddDefenceEvent.Invoke(originEntity, targetEntity, defenceRow, defenceAmount, defenceType);
+        }
+    }
+    public static void EmitEnemyIntent(EnemyIntent intent)
+    {
+        //Check if there are any subscribers
+        if (EnemyIntentEvent != null)
+        {
+            EnemyIntentEvent.Invoke(intent);
         }
     }
 
@@ -82,7 +98,7 @@ public class CombatEventManager : MonoBehaviour
 
     public static void StartTurn(EntityType combatant)
     {
-        Debug.Log($"Starting {combatant}'s turn.");
+        //Debug.Log($"Starting {combatant}'s turn.");
         //Check if there are any subscribers
         if (StartTurnEvent != null)
         {
@@ -104,7 +120,7 @@ public class CombatEventManager : MonoBehaviour
         //Check if the endturn event came from the combatant whose turn it was, otherwise ignore the event.
         if (_combatants[_turn].EntityType == combatant)
         {
-            Debug.Log($"Round {_round}, turn {_turn} ended. ({_combatants[_turn].EntityType})");
+            //Debug.Log($"Round {_round}, turn {_turn} ended. ({_combatants[_turn].EntityType})");
             _turn++;
             if (_turn == _combatants.Count)
             {

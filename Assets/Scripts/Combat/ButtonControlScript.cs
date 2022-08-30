@@ -11,7 +11,6 @@ public class ButtonControlScript : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log($"{this.transform.name} loaded.");
         CombatEventManager.StartTurnEvent += PlayerTurnStart;
         CombatEventManager.EndTurnEvent += PlayerTurnEnd;
     }
@@ -38,12 +37,12 @@ public class ButtonControlScript : MonoBehaviour
     }
     public void DealDamage()
     {
-        CombatEventManager.DealDamage(Target, DefenceRow, Amount);
+        CombatEventManager.DealDamage(EntityType.Player, Target, DefenceRow, Amount);
     }
 
     public void AddDefence()
     {
-        CombatEventManager.AddDefence(Target, DefenceRow, Amount);
+        CombatEventManager.AddDefence(EntityType.Player, Target, DefenceRow, Amount);
     }
 
     public void DealRandomDamage()
@@ -67,7 +66,7 @@ public class ButtonControlScript : MonoBehaviour
             default:
                 break;
         }
-        CombatEventManager.DealDamage(Target, defenceRow, damage);
+        CombatEventManager.DealDamage(EntityType.Player, Target, defenceRow, damage);
     }
 
     public void DealDamageRandomRow()
@@ -88,7 +87,7 @@ public class ButtonControlScript : MonoBehaviour
             default:
                 break;
         }
-        CombatEventManager.DealDamage(Target, defenceRow, Amount);
+        CombatEventManager.DealDamage(EntityType.Player, Target, defenceRow, Amount);
     }
     public void EndTurn()
     {

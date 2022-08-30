@@ -8,4 +8,6 @@ public class DefenceObjects : MonoBehaviour
     public GameObject MeleeImmune;
     public GameObject MagicImmune;
     public GameObject RangedImmune;
+
+    public GameObject IntentObject;
 }

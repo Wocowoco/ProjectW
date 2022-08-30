@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using static CombatEventManager;
 
@@ -6,28 +7,30 @@ namespace Assets.Scripts.Combat.EnemyAI
 {
     public class MeleeBottomAI : EnemyAI
     {
-        protected override void DoTurn()
+        
+        protected override void CalculateIntent()
         {
             int randNumber = Random.Range(1, 101);
-            /*
-            if (_PlayerLifeNode.)
-            if (_PlayerLifeNode.)
+            int damage = 1; 
+            if (randNumber > 75)
             {
+                damage = 2;
+            }
 
-            }*/
+            if (randNumber % 3 == 1)
+            {
+                _intent = new EnemyAttackIntent(this.EntityType, EntityType.Player, DefenceRow.Top, damage, DamageType.Melee);
+            }
+            else if (randNumber % 3 == 2)
+            {
+                _intent = new EnemyAttackIntent(this.EntityType, EntityType.Player, DefenceRow.Middle, damage, DamageType.Melee);
+            }
+            else
+            {
+                _intent = new EnemyAttackIntent(this.EntityType, EntityType.Player, DefenceRow.Bottom, damage, DamageType.Melee);
+            }
 
-            if (randNumber <= 75)
-            {
-                CombatEventManager.DealDamage(EntityType.Player, DefenceRow.Bottom, 1, DamageType.Melee);
-            }
-            else if (randNumber > 75 && randNumber <= 99)
-            {
-                CombatEventManager.DealDamage(EntityType.Player, DefenceRow.Middle, 1, DamageType.Melee);
-            }
-            else if (randNumber == 100)
-            {
-                CombatEventManager.DealDamage(EntityType.Player, DefenceRow.Top, 1, DamageType.Melee);
-            }
+            CombatEventManager.EmitEnemyIntent(_intent);
         }
     }
 }
