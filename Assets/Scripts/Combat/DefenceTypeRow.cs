@@ -76,7 +76,6 @@ public class DefenceTypeRow : MonoBehaviour
             _currentDefence--;
 
             _defenceRow[_currentDefence] = DefenceType.None;
-            Debug.Log($"Destroying {this.gameObject.transform.GetChild(_currentDefence).gameObject} as removeDefence");
             Destroy(this.gameObject.transform.GetChild(_currentDefence).gameObject);
         }
     }
@@ -161,7 +160,6 @@ public class DefenceTypeRow : MonoBehaviour
 
     public void CreateDamageIntent(EntityType originEntity, int damageAmount, DamageType damageType)
     {
-        Debug.Log($"Attack Intent received on {this.gameObject}");
         DamageIntent damageIntent = Instantiate(CombatEventManager.DefenceObjects.IntentObject,this.gameObject.transform).GetComponent<DamageIntent>();
         damageIntent.Initialize(damageAmount);
         _intents.Add(originEntity);
@@ -173,7 +171,6 @@ public class DefenceTypeRow : MonoBehaviour
         {
             //Get the intent in the intent list
             int index = _intents.IndexOf(originEntity);
-            Debug.Log($"Destroying {this.gameObject.transform.GetChild(_currentDefence + index).gameObject} as intentDestroy");
             Destroy(this.gameObject.transform.GetChild(_currentDefence + index).gameObject);
             _intents.RemoveAt(index);
 

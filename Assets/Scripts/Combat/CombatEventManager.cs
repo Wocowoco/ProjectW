@@ -8,6 +8,7 @@ using static CombatEventManager;
 public class CombatEventManager : MonoBehaviour
 {
     public static DefenceObjects DefenceObjects;
+    public static EnergyObjects EnergyObjects;
 
     //DamageEvent
     public delegate void DamageEvent(EntityType originEntity, EntityType targetEntity, DefenceRow defenceRow, int damageAmount, DamageType damageType);
@@ -25,12 +26,16 @@ public class CombatEventManager : MonoBehaviour
 
     //InitializeEvent
     public delegate void InitializeEvent(CombatEntity combatant);
-    public static event InitializeEvent InitializeLifeNodeEvent;
+    public static event InitializeEvent InitializeCombatantEvent;
 
     //IntentEvents
     public delegate void IntentEvent(EnemyIntent intent);
     public static event IntentEvent EnemyIntentEvent;
 
+    //EnergyEvent
+    public delegate void EnergyEvent(int energyAmount);
+    public static event EnergyEvent SpendEnergyEvent;
+    public static event EnergyEvent RemainingEnergyEvent;
 
     private List<CombatEntity> _combatants = new List<CombatEntity>();
 
@@ -42,15 +47,14 @@ public class CombatEventManager : MonoBehaviour
     {
         this.gameObject.AddComponent<MeleeBottomAI>();
         DefenceObjects = this.transform.GetComponent<DefenceObjects>();
-        CombatEntity player = new(5, 5, 5, 2, 1, 3, EntityType.Player);
-        CombatEntity enemy = new(3, 3, 3, 1, 1, 1);
+        EnergyObjects = this.transform.GetComponent<EnergyObjects>();
+        CombatEntity player = new(5, 5, 5, 2, 2, 1, 3, EntityType.Player);
+        CombatEntity enemy = new(3, 3, 3, 0, 1, 1, 1);
         _combatants.Add(player);
         InitializeLifeNode(player);
         _combatants.Add(enemy);
         InitializeLifeNode(enemy);
         _combatants.Sort();
-
-        //AddDefence(EntityType.Player, DefenceRow.Top, 2, DefenceType.MeleeImmune);
 
         EndTurnEvent += IncreaseTurnCounter;
         StartTurn(_combatants[_turn].EntityType);
@@ -66,7 +70,7 @@ public class CombatEventManager : MonoBehaviour
         //Check if there are any subscribers on damageEvent before invoking it
         if (TakeDamageEvent != null)
         {
-            Debug.Log($"{originEntity} is dealing {damageAmount} {damageType} damage to {targetEntity} on the {defenceRow} row.");
+            //Debug.Log($"{originEntity} is dealing {damageAmount} {damageType} damage to {targetEntity} on the {defenceRow} row.");
             TakeDamageEvent.Invoke(originEntity, targetEntity, defenceRow, damageAmount, damageType);
         }
     }
@@ -98,7 +102,6 @@ public class CombatEventManager : MonoBehaviour
 
     public static void StartTurn(EntityType combatant)
     {
-        //Debug.Log($"Starting {combatant}'s turn.");
         //Check if there are any subscribers
         if (StartTurnEvent != null)
         {
@@ -106,12 +109,30 @@ public class CombatEventManager : MonoBehaviour
         }
     }
 
+    public static void SpendEnergy(int energyAmount)
+    {
+        //Check if there are any subscribers
+        if (SpendEnergyEvent != null)
+        {
+            SpendEnergyEvent.Invoke(energyAmount);
+        }
+    }
+
+    public static void RemainingEnergy(int energyAmount)
+    {
+        //Check for subs
+        if (RemainingEnergyEvent != null)
+        {
+            RemainingEnergyEvent.Invoke(energyAmount);
+        }
+    }
+
     public static void InitializeLifeNode(CombatEntity combatant)
     {
         //Check if there are any subscribers
-        if (InitializeLifeNodeEvent != null)
+        if (InitializeCombatantEvent != null)
         {
-            InitializeLifeNodeEvent.Invoke(combatant);
+            InitializeCombatantEvent.Invoke(combatant);
         }
     }
 

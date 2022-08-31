@@ -271,6 +271,7 @@ GameObject:
   - component: {fileID: 200695842}
   - component: {fileID: 200695845}
   - component: {fileID: 200695846}
+  - component: {fileID: 200695847}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -373,6 +374,20 @@ MonoBehaviour:
   MagicImmune: {fileID: 5865215409822053609, guid: f2362373ebd2b9a49a56ec9231b22242, type: 3}
   RangedImmune: {fileID: 978745862975941157, guid: 4a5e884e20a6ca54d9552e9b32611c90, type: 3}
   IntentObject: {fileID: 3662822872478039017, guid: b689f69f211ca6e4b929c3eda437d86b, type: 3}
+--- !u!114 &200695847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 200695841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9089ecfddc782774b9e5bc588ff68176, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnergyBackground: {fileID: 1637652653380424961, guid: 91e222b9877d2f24d8511d25965a26c5, type: 3}
+  EnergyForeground: {fileID: 5881861190478127273, guid: 3b9cfb08c774b844ca833ca7fe2a30ab, type: 3}
 --- !u!1 &235784564
 GameObject:
   m_ObjectHideFlags: 0
@@ -431,7 +446,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Action 2
+  m_text: '2 Energy
+
+
+    +1 Defence
+
+    Bottom Row'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -699,6 +719,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Amount: 1
+  EnergyCost: 0
   DefenceRow: 3
   Target: 0
 --- !u!114 &630093518
@@ -996,6 +1017,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Amount: 1
+  EnergyCost: 0
   DefenceRow: 3
   Target: 0
 --- !u!114 &860067809
@@ -1252,7 +1274,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Deal 1 melee damage (Random row)
+  m_text: '1 Energy
+
+
+    1 Melee Damage
+
+    Random Row'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1520,6 +1547,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Amount: 1
+  EnergyCost: 0
   DefenceRow: 3
   Target: 0
 --- !u!114 &1681082816
@@ -1682,6 +1710,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Amount: 1
+  EnergyCost: 1
   DefenceRow: 3
   Target: 1
 --- !u!114 &1805496639
@@ -1832,6 +1861,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Amount: 1
+  EnergyCost: 2
   DefenceRow: 3
   Target: 0
 --- !u!114 &1888290732
@@ -1880,7 +1910,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1888290731}
         m_TargetAssemblyTypeName: ButtonControlScript, Assembly-CSharp
-        m_MethodName: 
+        m_MethodName: AddDefence
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2073,3 +2103,60 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50c90eefccfc8ed4287aba61360a166d, type: 3}
+--- !u!1001 &7878964478485597549
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7878964479102248037, guid: ad22e415928f106448b950eb4df9293b, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7878964479102248037, guid: ad22e415928f106448b950eb4df9293b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4.69
+      objectReference: {fileID: 0}
+    - target: {fileID: 7878964479102248037, guid: ad22e415928f106448b950eb4df9293b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.26
+      objectReference: {fileID: 0}
+    - target: {fileID: 7878964479102248037, guid: ad22e415928f106448b950eb4df9293b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.005335927
+      objectReference: {fileID: 0}
+    - target: {fileID: 7878964479102248037, guid: ad22e415928f106448b950eb4df9293b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7878964479102248037, guid: ad22e415928f106448b950eb4df9293b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7878964479102248037, guid: ad22e415928f106448b950eb4df9293b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7878964479102248037, guid: ad22e415928f106448b950eb4df9293b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7878964479102248037, guid: ad22e415928f106448b950eb4df9293b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7878964479102248037, guid: ad22e415928f106448b950eb4df9293b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7878964479102248037, guid: ad22e415928f106448b950eb4df9293b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7878964479102248042, guid: ad22e415928f106448b950eb4df9293b, type: 3}
+      propertyPath: m_Name
+      value: EnergyNode
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ad22e415928f106448b950eb4df9293b, type: 3}

@@ -76,7 +76,7 @@ public class LifeNodeManager : MonoBehaviour
     {
         CombatEventManager.TakeDamageEvent += TakeDamage;
         CombatEventManager.AddDefenceEvent += AddDefence;
-        CombatEventManager.InitializeLifeNodeEvent += Initialize;
+        CombatEventManager.InitializeCombatantEvent += Initialize;
         CombatEventManager.EnemyIntentEvent += IdentifyEnemyIntent;
     }
 
@@ -84,7 +84,7 @@ public class LifeNodeManager : MonoBehaviour
     {
         CombatEventManager.TakeDamageEvent -= TakeDamage;
         CombatEventManager.AddDefenceEvent -= AddDefence;
-        CombatEventManager.InitializeLifeNodeEvent -= Initialize;
+        CombatEventManager.InitializeCombatantEvent -= Initialize;
         CombatEventManager.EnemyIntentEvent -= IdentifyEnemyIntent;
     }
 

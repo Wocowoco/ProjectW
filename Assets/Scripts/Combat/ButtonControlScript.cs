@@ -5,6 +5,7 @@ using static CombatEventManager;
 public class ButtonControlScript : MonoBehaviour
 {
     public int Amount;
+    public int EnergyCost;
     public DefenceRow DefenceRow;
     public EntityType Target;
 
@@ -13,12 +14,14 @@ public class ButtonControlScript : MonoBehaviour
     {
         CombatEventManager.StartTurnEvent += PlayerTurnStart;
         CombatEventManager.EndTurnEvent += PlayerTurnEnd;
+        CombatEventManager.RemainingEnergyEvent += CheckEnoughEnergy;
     }
 
     private void OnDisable()
     {
         CombatEventManager.StartTurnEvent -= PlayerTurnStart;
         CombatEventManager.EndTurnEvent -= PlayerTurnEnd;
+        CombatEventManager.RemainingEnergyEvent -= CheckEnoughEnergy;
     }
 
     private void PlayerTurnStart(EntityType entity)
@@ -38,11 +41,21 @@ public class ButtonControlScript : MonoBehaviour
     public void DealDamage()
     {
         CombatEventManager.DealDamage(EntityType.Player, Target, DefenceRow, Amount);
+        CombatEventManager.SpendEnergy(EnergyCost);
     }
 
     public void AddDefence()
     {
         CombatEventManager.AddDefence(EntityType.Player, Target, DefenceRow, Amount);
+        CombatEventManager.SpendEnergy(EnergyCost);
+    }
+
+    public void CheckEnoughEnergy(int energyAmount)
+    {
+        if (EnergyCost > energyAmount)
+        {
+            this.transform.GetComponent<Button>().interactable = false;
+        }
     }
 
     public void DealRandomDamage()
@@ -88,6 +101,7 @@ public class ButtonControlScript : MonoBehaviour
                 break;
         }
         CombatEventManager.DealDamage(EntityType.Player, Target, defenceRow, Amount);
+        CombatEventManager.SpendEnergy(EnergyCost);
     }
     public void EndTurn()
     {

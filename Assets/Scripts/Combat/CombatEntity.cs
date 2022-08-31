@@ -1,5 +1,4 @@
 using System;
-using UnityEditor;
 using UnityEngine;
 using static CombatEventManager;
 
@@ -18,6 +17,9 @@ public class CombatEntity : IComparable<CombatEntity>
     [field: SerializeField]
     public int StartingSpeed { get; private set; }
 
+    [field: SerializeField]
+    public int MaxEnergy { get; private set; }
+
 
     //Defence rows
     [field: SerializeField]
@@ -30,11 +32,12 @@ public class CombatEntity : IComparable<CombatEntity>
     public int StartingDefenceBottom { get; private set; } = 0;
 
 
-    public CombatEntity(int maxHp, int currentHp, int speed, int defTop = 0, int defMid = 0, int defBot = 0, EntityType entityType = EntityType.Enemy)
+    public CombatEntity(int maxHp, int currentHp, int speed, int maxEnergy, int defTop = 0, int defMid = 0, int defBot = 0, EntityType entityType = EntityType.Enemy)
     {
         MaxHealth = maxHp;
         CurrentHealth = currentHp;
         StartingSpeed = speed;
+        MaxEnergy = maxEnergy;
         StartingDefenceTop = defTop;
         StartingDefenceMiddle = defMid;
         StartingDefenceBottom = defBot;
