@@ -56,7 +56,14 @@ public class DefenceTypeRow : MonoBehaviour
                         break;
                 }
 
+
                 Instantiate(defenceObject, this.gameObject.transform);
+                //Check for intents
+                if (_intents.Count != 0)
+                {
+                    this.transform.GetChild(_currentDefence).SetAsLastSibling();
+                }
+
                 _currentDefence++;
             }
         }
