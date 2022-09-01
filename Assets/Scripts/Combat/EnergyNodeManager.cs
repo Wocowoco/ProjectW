@@ -15,12 +15,13 @@ public class EnergyNodeManager : MonoBehaviour
     GameObject _foreground;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         _background = this.transform.Find("Background").gameObject;
         _foreground = this.transform.Find("Foreground").gameObject;
         Destroy(_background.transform.GetChild(0).gameObject);
         Destroy(_foreground.transform.GetChild(0).gameObject);
+
     }
 
     private void OnEnable()

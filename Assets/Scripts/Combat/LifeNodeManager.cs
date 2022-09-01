@@ -65,13 +65,6 @@ public class LifeNodeManager : MonoBehaviour
         }
     }
 
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     private void OnEnable()
     {
         CombatEventManager.TakeDamageEvent += TakeDamage;

@@ -9,7 +9,7 @@ public class ButtonControlScript : MonoBehaviour
     public DefenceRow DefenceRow;
     public EntityType Target;
 
-    private void Start()
+    private void Awake()
     {
         this.transform.GetComponent<Button>().interactable = false;
     }
