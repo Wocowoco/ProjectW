@@ -47,7 +47,7 @@ public class LifeNodeManager : MonoBehaviour
         if (combatant.EntityType == EntityType)
         {
             Entity = combatant;
-            _hpText = this.transform.Find("HpCanvas").Find("HpText").gameObject.GetComponent<TextMeshProUGUI>();
+            _hpText = this.transform.Find("HpText").gameObject.GetComponent<TextMeshProUGUI>();
             Transform defenceRows = this.transform.Find("DefenceRows");
             _defenceTypesTop = defenceRows.Find("DefenceRowTop").AddComponent<DefenceTypeRow>();
             _defenceTypesTop.Initialize(Entity.StartingDefenceTop);

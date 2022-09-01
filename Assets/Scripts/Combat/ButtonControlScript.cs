@@ -9,27 +9,20 @@ public class ButtonControlScript : MonoBehaviour
     public DefenceRow DefenceRow;
     public EntityType Target;
 
-
+    private void Start()
+    {
+        this.transform.GetComponent<Button>().interactable = false;
+    }
     private void OnEnable()
     {
-        CombatEventManager.StartTurnEvent += PlayerTurnStart;
         CombatEventManager.EndTurnEvent += PlayerTurnEnd;
         CombatEventManager.RemainingEnergyEvent += CheckEnoughEnergy;
     }
 
     private void OnDisable()
     {
-        CombatEventManager.StartTurnEvent -= PlayerTurnStart;
         CombatEventManager.EndTurnEvent -= PlayerTurnEnd;
         CombatEventManager.RemainingEnergyEvent -= CheckEnoughEnergy;
-    }
-
-    private void PlayerTurnStart(EntityType entity)
-    {
-        if (entity == EntityType.Player)
-        {
-            this.transform.GetComponent<Button>().interactable = true;
-        }
     }
     private void PlayerTurnEnd(EntityType entity)
     {
@@ -55,6 +48,10 @@ public class ButtonControlScript : MonoBehaviour
         if (EnergyCost > energyAmount)
         {
             this.transform.GetComponent<Button>().interactable = false;
+        }
+        else
+        {
+            this.transform.GetComponent<Button>().interactable = true;
         }
     }
 

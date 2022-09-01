@@ -19,6 +19,8 @@ public class EnergyNodeManager : MonoBehaviour
     {
         _background = this.transform.Find("Background").gameObject;
         _foreground = this.transform.Find("Foreground").gameObject;
+        Destroy(_background.transform.GetChild(0).gameObject);
+        Destroy(_foreground.transform.GetChild(0).gameObject);
     }
 
     private void OnEnable()
@@ -70,6 +72,7 @@ public class EnergyNodeManager : MonoBehaviour
         }
 
         _currentEnergy = MaxEnergy;
+        CombatEventManager.RemainingEnergy(_currentEnergy);
     }
 
     private void SpendEnergy(int energyAmount)
@@ -84,7 +87,6 @@ public class EnergyNodeManager : MonoBehaviour
         //Remove energy visually
         for (int i = 0; i < energyAmount; i++)
         {
-            Debug.Log(_foreground.transform.GetChild(i).gameObject);
             Destroy(_foreground.transform.GetChild(i).gameObject);
         }
 

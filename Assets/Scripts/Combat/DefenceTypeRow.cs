@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using static CombatEventManager;
 
 public class DefenceTypeRow : MonoBehaviour
@@ -84,24 +85,24 @@ public class DefenceTypeRow : MonoBehaviour
     {
         if (_defenceRow[position] != DefenceType.None)
         {
-            SpriteRenderer spriteRender = this.gameObject.transform.GetChild(position).GetComponent<SpriteRenderer>();
+            RawImage rawImage = this.gameObject.transform.GetChild(position).GetComponent<RawImage>();
             switch (defenceType)
             {
                 case DefenceType.MeleeImmune:
                     _defenceRow[position] = DefenceType.MeleeImmune;
-                    spriteRender.sprite = CombatEventManager.DefenceObjects.MeleeImmune.GetComponent<SpriteRenderer>().sprite;
+                    rawImage.texture = CombatEventManager.DefenceObjects.MeleeImmune.GetComponent<RawImage>().texture;
                     break;
                 case DefenceType.RangedImmune:
                     _defenceRow[position] = DefenceType.RangedImmune;
-                    spriteRender.sprite = CombatEventManager.DefenceObjects.RangedImmune.GetComponent<SpriteRenderer>().sprite;
+                    rawImage.texture = CombatEventManager.DefenceObjects.RangedImmune.GetComponent<RawImage>().texture;
                     break;
                 case DefenceType.MagicImmune:
                     _defenceRow[position] = DefenceType.MagicImmune;
-                    spriteRender.sprite = CombatEventManager.DefenceObjects.MagicImmune.GetComponent<SpriteRenderer>().sprite;
+                    rawImage.texture = CombatEventManager.DefenceObjects.MagicImmune.GetComponent<RawImage>().texture;
                     break;
                 default:
                     _defenceRow[position] = DefenceType.Normal;
-                    spriteRender.sprite = CombatEventManager.DefenceObjects.NormalDefence.GetComponent<SpriteRenderer>().sprite;
+                    rawImage.texture = CombatEventManager.DefenceObjects.NormalDefence.GetComponent<RawImage>().texture;
                     break;
             }
         }
