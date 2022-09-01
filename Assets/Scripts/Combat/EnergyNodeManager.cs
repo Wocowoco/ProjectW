@@ -81,13 +81,24 @@ public class EnergyNodeManager : MonoBehaviour
             return;
         }
 
+        //Remove energy visually
         for (int i = 0; i < energyAmount; i++)
         {
             Debug.Log(_foreground.transform.GetChild(i).gameObject);
             Destroy(_foreground.transform.GetChild(i).gameObject);
         }
 
+        //Update leftover energy
         _currentEnergy -= energyAmount;
-        CombatEventManager.RemainingEnergy(_currentEnergy);
+
+        //If out of energy, end the player turn
+        if (_currentEnergy == 0)
+        {
+            CombatEventManager.EndTurn(CombatEventManager.EntityType.Player);
+        }
+        else
+        {
+            CombatEventManager.RemainingEnergy(_currentEnergy);
+        }
     }
 }
