@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 40fefdf178a47dc408dc827ab7965d40
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - Melee: {fileID: 2800000, guid: 2ccfc6d7d3ab4654b97a8347c4b4cef2, type: 3}
+  - Magic: {fileID: 2800000, guid: 0bb26dd43ad75694e94774a98867b11f, type: 3}
+  - Ranged: {fileID: 2800000, guid: 0c5a8af890c79c94cbb5fdf2b91ae639, type: 3}
+  - Normal: {fileID: 2800000, guid: ef70225eacdc9064daca84a82a808117, type: 3}
+  - MeleeImmune: {fileID: 2800000, guid: d2b15b8ceda842442a1a973d329f7e8e, type: 3}
+  - MagicImmune: {fileID: 2800000, guid: 0cf78a05c5491d140b2ddff4cda31a03, type: 3}
+  - RangedImmune: {fileID: 2800000, guid: 94bd58c2b5691794b8cbc17dfd3ba18f, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

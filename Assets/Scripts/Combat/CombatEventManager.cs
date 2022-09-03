@@ -1,14 +1,12 @@
 using Assets.Scripts.Combat.EnemyAI;
-using JetBrains.Annotations;
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
-using static CombatEventManager;
 
 public class CombatEventManager : MonoBehaviour
 {
     public static DefenceObjects DefenceObjects;
     public static EnergyObjects EnergyObjects;
+    public static ActionTextures ActionTextures;
 
     //DamageEvent
     public delegate void DamageEvent(EntityType originEntity, EntityType targetEntity, DefenceRow defenceRow, int damageAmount, DamageType damageType);
@@ -43,11 +41,16 @@ public class CombatEventManager : MonoBehaviour
     private int _round = 0;
 
 
+    private void Awake()
+    {
+        DefenceObjects = this.transform.GetComponent<DefenceObjects>();
+        EnergyObjects = this.transform.GetComponent<EnergyObjects>();
+        ActionTextures = this.transform.GetComponent<ActionTextures>();
+    }
     void Start()
     {
         this.gameObject.AddComponent<MeleeBottomAI>();
-        DefenceObjects = this.transform.GetComponent<DefenceObjects>();
-        EnergyObjects = this.transform.GetComponent<EnergyObjects>();
+
         CombatEntity player = new(5, 5, 5, 2, 2, 1, 3, EntityType.Player);
         CombatEntity enemy = new(3, 3, 3, 0, 1, 1, 1);
         _combatants.Add(player);
@@ -187,5 +190,15 @@ public class CombatEventManager : MonoBehaviour
     {
         Player,
         Enemy
+    }
+
+    public enum PlayerAction
+    {
+        Mainhand,
+        Offhand,
+        Action1,
+        Action2,
+        Action3,
+        Action4
     }
 }
