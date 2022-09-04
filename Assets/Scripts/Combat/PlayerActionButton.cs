@@ -1,3 +1,6 @@
+using System.Collections;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,14 +26,13 @@ public class PlayerActionButton : MonoBehaviour
     public GameObject EnergyDisplay;
     public RawImage ImageSlot;
     public RawImage ActionTypeIcon;
+    public RawImage CooldownIcon;
     public TextMeshProUGUI ActionText;
     public GameObject CooldownObject;
     public TextMeshProUGUI CooldownText;
     public TextMeshProUGUI TopChanceText;
     public TextMeshProUGUI MiddleChanceText;
     public TextMeshProUGUI BottomChanceText;
-    public HorizontalLayoutGroup ActionLayoutGroup;
-    public HorizontalLayoutGroup CooldownLayoutGroup;
 
     public RawImage ActionBorder;
     public RawImage ActionBackground;
@@ -44,6 +46,9 @@ public class PlayerActionButton : MonoBehaviour
     private Color _rangedColor = new Color32(51, 85, 37, 255);
     private Color _rangedColorBackground = new Color32(200, 255, 200, 255);
 
+    private int _currentCooldown = 0;
+
+
     private void Awake()
     {
         DisableButton();
@@ -55,7 +60,7 @@ public class PlayerActionButton : MonoBehaviour
         PrintEnergy();
         SetAction();
         SetAttackStyle();
-        SetCooldown();
+        SetCooldownText();
     }
 
     private void OnEnable()
@@ -69,11 +74,13 @@ public class PlayerActionButton : MonoBehaviour
         CombatEventManager.EndTurnEvent -= PlayerTurnEnd;
         CombatEventManager.RemainingEnergyEvent -= CheckEnoughEnergy;
     }
-    void Update()
+
+    void FixedUpdate()
     {
-        //Fix for aligning the icon properly
         ActionTypeIcon.enabled = false;
         ActionTypeIcon.enabled = true;
+        CooldownIcon.enabled = false;
+        CooldownIcon.enabled = true;
     }
 
     private void SetAttackStyle()
@@ -138,6 +145,7 @@ public class PlayerActionButton : MonoBehaviour
 
         //Set item texture
         ImageSlot.texture = Image;
+
     }
 
     private void PrintEnergy()
@@ -155,18 +163,29 @@ public class PlayerActionButton : MonoBehaviour
         }
     }
 
-    private void SetCooldown()
+    private void SetCooldownText()
     {
-        //TODO implement cooldown
-        if (Cooldown == 0)
+
+        //Item is currently not on cooldown, just display cooldown
+        if (_currentCooldown == 0)
         {
-            CooldownObject.SetActive(false);
+            CooldownText.text = Cooldown.ToString();
         }
+        else //Item is on cooldown, display total current and total cooldown
+        {
+            CooldownText.text = $"{_currentCooldown - 1} ({Cooldown})";
+        }        
     }
 
     public void OnButtonClick()
     {
-        CombatEventManager.SpendEnergy(EnergyCost);
+        //Start cooldown if item has a cooldown
+        if (Cooldown != 0)
+        {
+            _currentCooldown = Cooldown;
+            SetCooldownText();
+            DisableButton();
+        }
 
         if (IsDefensive)
         {
@@ -178,6 +197,8 @@ public class PlayerActionButton : MonoBehaviour
             DefenceRow defenceRow = CalculateDefenceRow();
             CombatEventManager.DealDamage(EntityType.Player, EntityType.Enemy, defenceRow, ActionAmount, DamageType);
         }
+
+        CombatEventManager.SpendEnergy(EnergyCost);
     }
 
     private DefenceRow CalculateDefenceRow()
@@ -204,17 +225,25 @@ public class PlayerActionButton : MonoBehaviour
         if (entity == EntityType.Player)
         {
             DisableButton();
-        }
+
+            if (_currentCooldown != 0)
+            {
+                //Reduce cooldown by one
+                _currentCooldown--;
+            }
+        } 
     }
     public void CheckEnoughEnergy(int energyAmount)
     {
+        SetCooldownText();
+
         if (EnergyCost > energyAmount)
         {
             DisableButton();
         }
         else
         {
-            EnableButton();
+            TryEnableButton();
         }
     }
 
@@ -223,9 +252,13 @@ public class PlayerActionButton : MonoBehaviour
         this.transform.GetComponent<Button>().interactable = false;
     }
 
-    private void EnableButton()
+    private void TryEnableButton()
     {
-        this.transform.GetComponent<Button>().interactable = true;    
+        if (_currentCooldown == 0)
+        {
+            this.transform.GetComponent<Button>().interactable = true;
+        }
     }
 }
+
 

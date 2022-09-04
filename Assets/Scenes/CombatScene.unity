@@ -572,12 +572,32 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3501780690768075287, guid: 324b7992aaed37f459eb453651c83f2b, type: 3}
+      propertyPath: Image
+      value: 
+      objectReference: {fileID: 2800000, guid: 5211b89da66ce8143a3893b2aaa05eba, type: 3}
+    - target: {fileID: 3501780690768075287, guid: 324b7992aaed37f459eb453651c83f2b, type: 3}
+      propertyPath: Cooldown
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3501780690768075287, guid: 324b7992aaed37f459eb453651c83f2b, type: 3}
       propertyPath: DamageType
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3501780690768075287, guid: 324b7992aaed37f459eb453651c83f2b, type: 3}
       propertyPath: EnergyCost
-      value: 3
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3501780690768075287, guid: 324b7992aaed37f459eb453651c83f2b, type: 3}
+      propertyPath: DefenceType
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3501780690768075287, guid: 324b7992aaed37f459eb453651c83f2b, type: 3}
+      propertyPath: IsDefensive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3501780690768075287, guid: 324b7992aaed37f459eb453651c83f2b, type: 3}
+      propertyPath: ActionAmount
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3501780690768075287, guid: 324b7992aaed37f459eb453651c83f2b, type: 3}
       propertyPath: PlayerAction
@@ -1380,12 +1400,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3501780690768075287, guid: 324b7992aaed37f459eb453651c83f2b, type: 3}
+      propertyPath: Cooldown
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3501780690768075287, guid: 324b7992aaed37f459eb453651c83f2b, type: 3}
       propertyPath: DamageType
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3501780690768075287, guid: 324b7992aaed37f459eb453651c83f2b, type: 3}
       propertyPath: EnergyCost
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3501780690768075287, guid: 324b7992aaed37f459eb453651c83f2b, type: 3}
       propertyPath: PlayerAction
@@ -2988,7 +3012,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 75, y: -75}
+  m_AnchoredPosition: {x: 75, y: -80}
   m_SizeDelta: {x: 1.5, y: 1.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &3127599572875424113
@@ -3440,7 +3464,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -75, y: -75}
+  m_AnchoredPosition: {x: -75, y: -80}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &6936090985474896446

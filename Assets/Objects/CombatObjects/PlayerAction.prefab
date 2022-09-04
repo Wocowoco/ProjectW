@@ -787,14 +787,13 @@ MonoBehaviour:
   EnergyDisplay: {fileID: 1323840510632440424}
   ImageSlot: {fileID: 3501780690816544903}
   ActionTypeIcon: {fileID: 3501780690924953328}
+  CooldownIcon: {fileID: 3501780691753609337}
   ActionText: {fileID: 3501780690304436454}
   CooldownObject: {fileID: 3501780691912710600}
   CooldownText: {fileID: 3501780691386604101}
   TopChanceText: {fileID: 3501780691439545426}
   MiddleChanceText: {fileID: 3501780690547658291}
   BottomChanceText: {fileID: 3501780691975133948}
-  ActionLayoutGroup: {fileID: 3501780690188750159}
-  CooldownLayoutGroup: {fileID: 3501780691912710606}
   ActionBorder: {fileID: 3501780690692164523}
   ActionBackground: {fileID: 3501780691801416840}
 --- !u!1 &3501780690816544897
