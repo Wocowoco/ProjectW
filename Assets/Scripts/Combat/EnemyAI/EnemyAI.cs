@@ -6,7 +6,7 @@ namespace Assets.Scripts.Combat.EnemyAI
 {
     public abstract class EnemyAI : MonoBehaviour
     {
-        protected EntityType _myEntityType = EntityType.Enemy;
+        public EntityType _myEntityType = EntityType.Enemy;
         protected EntityType EntityType { get => _myEntityType;}
         protected CombatEntity _player;
         protected EnemyIntent _intent = null;

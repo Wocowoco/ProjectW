@@ -62,6 +62,7 @@ public class LifeNodeManager : MonoBehaviour
         CombatEventManager.AddDefenceEvent += AddDefence;
         CombatEventManager.InitializeCombatantEvent += Initialize;
         CombatEventManager.EnemyIntentEvent += IdentifyEnemyIntent;
+        CombatEventManager.DeleteIntentEvent += DeleteIntent;
     }
 
     private void OnDisable()
@@ -70,6 +71,7 @@ public class LifeNodeManager : MonoBehaviour
         CombatEventManager.AddDefenceEvent -= AddDefence;
         CombatEventManager.InitializeCombatantEvent -= Initialize;
         CombatEventManager.EnemyIntentEvent -= IdentifyEnemyIntent;
+        CombatEventManager.DeleteIntentEvent -= DeleteIntent;
     }
 
     private void TakeDamage(EntityType originEntity, EntityType targetEntity, DefenceRow defenceRow, int amountOfDamage, DamageType damageType)
@@ -104,6 +106,12 @@ public class LifeNodeManager : MonoBehaviour
                 default:
                     break;
             }
+        }
+
+        //If health is 0, enemy is defeated
+        if (Health == 0)
+        {
+            CombatEventManager.DefeatedCombatant(this.Entity);
         }
     }
 
@@ -166,6 +174,13 @@ public class LifeNodeManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void DeleteIntent(EntityType fromEntity)
+    {
+        _defenceTypesTop.DeleteIntent(fromEntity);
+        _defenceTypesMiddle.DeleteIntent(fromEntity);
+        _defenceTypesBottom.DeleteIntent(fromEntity);
     }
 
     public void ResetStats()

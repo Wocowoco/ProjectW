@@ -67,12 +67,14 @@ public class PlayerActionButton : MonoBehaviour
     {
         CombatEventManager.EndTurnEvent += PlayerTurnEnd;
         CombatEventManager.RemainingEnergyEvent += CheckEnoughEnergy;
+        CombatEventManager.EndRoundEvent += EndRound;
     }
 
     private void OnDisable()
     {
         CombatEventManager.EndTurnEvent -= PlayerTurnEnd;
         CombatEventManager.RemainingEnergyEvent -= CheckEnoughEnergy;
+        CombatEventManager.EndRoundEvent -= EndRound;
     }
 
     void FixedUpdate()
@@ -225,13 +227,16 @@ public class PlayerActionButton : MonoBehaviour
         if (entity == EntityType.Player)
         {
             DisableButton();
-
-            if (_currentCooldown != 0)
-            {
-                //Reduce cooldown by one
-                _currentCooldown--;
-            }
         } 
+    }
+
+    private void EndRound()
+    {
+        if (_currentCooldown != 0)
+        {
+            //Reduce cooldown by one
+            _currentCooldown--;
+        }
     }
     public void CheckEnoughEnergy(int energyAmount)
     {

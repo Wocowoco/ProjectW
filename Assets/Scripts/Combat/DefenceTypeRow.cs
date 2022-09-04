@@ -112,6 +112,15 @@ public class DefenceTypeRow : MonoBehaviour
         }
     }
 
+    public void DeleteIntent(EntityType fromEntity)
+    {
+        //Check if there is currently an intent by the provided entity, if so, delete it.
+        if (_intents.Contains(fromEntity))
+        {
+            DestroyIntent(fromEntity);
+        }
+    }
+
     public int CalculateDamageReceived(int amountOfDamage, DamageType damageType)
     {
         int damageReceived = 0;

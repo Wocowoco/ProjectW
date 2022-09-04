@@ -1,7 +1,5 @@
 using Assets.Scripts.Combat.EnemyAI;
 using System.Collections.Generic;
-using Unity.Rendering.HybridV2;
-using Unity.VisualScripting;
 using UnityEngine;
 using static CombatEventManager;
 
@@ -13,29 +11,32 @@ public class CombatManager : MonoBehaviour
     private int _turn = 0;
     private int _round = 0;
     private List<CombatEntity> _combatants = new List<CombatEntity>();
-    private Dictionary<EntityType, bool> _enemyEntitiesInCombat = new();
+    private List<CombatEntity> _waitingCombatants = new List<CombatEntity>();
+    private Dictionary<EntityType, GameObject> _enemyEntitiesInCombat = new();
+    private int _enemiesToBeAdded = 0;
 
     void OnEnable()
     {
+        CombatEventManager.DefeatedCombatantEvent += RemoveCombatant;
     }
 
     void OnDisable()
     {
+        CombatEventManager.DefeatedCombatantEvent -= RemoveCombatant;
     }
 
     void Start()
     {
-        //Initialize Dictionary
-        _enemyEntitiesInCombat.Add(EntityType.Enemy, false);
-        _enemyEntitiesInCombat.Add(EntityType.Enemy2, false);
-        _enemyEntitiesInCombat.Add(EntityType.Enemy3, false);
+        _enemyEntitiesInCombat.Add(EntityType.Enemy, null);
+        _enemyEntitiesInCombat.Add(EntityType.Enemy2, null);
+        _enemyEntitiesInCombat.Add(EntityType.Enemy3, null);
 
-        
-        CombatEntity player = new(5, 5, 5, 2, 2, 1, 3, EntityType.Player);
-        CombatEntity enemy = new(3, 3, 3, 0, 1, 1, 1, EntityType.Enemy);
-        CombatEntity enemy2 = new(7, 7, 2, 2, 1, 3, 2, EntityType.Enemy);
-        CombatEntity enemy3 = new(4, 4, 2, 2, 5, 4, 3, EntityType.Enemy);
-        CombatEntity enemy4 = new(4, 4, 2, 2, 5, 4, 3, EntityType.Enemy);
+        CombatEntity player = new(999, 999, 4, 2, 0, 0, 0, EntityType.Player);
+        CombatEntity enemy = new(3, 3, 3, 0, 0, 0, 0, EntityType.Enemy);
+        CombatEntity enemy2 = new(2, 2, 2, 2, 2, 2, 2, EntityType.Enemy);
+        CombatEntity enemy3 = new(4, 4, 2, 3, 3, 3, 3, EntityType.Enemy);
+        CombatEntity enemy4 = new(5, 5, 2, 4, 4, 0, 0, EntityType.Enemy);
+        CombatEntity enemy5 = new(7, 7, 2, 5, 5, 0, 0, EntityType.Enemy);
         AddCombatant(player);
         AddCombatant(enemy);
         AddCombatant(enemy2);
@@ -55,12 +56,11 @@ public class CombatManager : MonoBehaviour
             _turn++;
             if (_turn == _combatants.Count)
             {
-                _round++;
-                //Logic for a new round
-                _turn = 0;
+                //Start next round
+                EndRound();
             }
             //Start next combatants turn
-            StartTurn(_combatants[_turn].EntityType);
+            CombatEventManager.StartTurn(_combatants[_turn].EntityType);
         }
         else
         {
@@ -74,38 +74,38 @@ public class CombatManager : MonoBehaviour
         if (combatEntity.EntityType == EntityType.Enemy)
         {
             //Try to put enemy in slot1
-            if (_enemyEntitiesInCombat[EntityType.Enemy] == false)
+            if (_enemyEntitiesInCombat[EntityType.Enemy] == null)
             {
                 _combatants.Add(combatEntity);
                 GameObject lifeNode = Instantiate(EnemyLifeNode, EnemyLifeNodeCollection.transform);
                 lifeNode.GetComponent<LifeNodeManager>().SetEntity(EntityType.Enemy);
-                this.gameObject.AddComponent<MeleeBottomAI>().SetEntity(EntityType.Enemy);
+                lifeNode.AddComponent<MeleeBottomAI>().SetEntity(EntityType.Enemy);
                 CombatEventManager.InitializeLifeNode(combatEntity);
-                _enemyEntitiesInCombat[EntityType.Enemy] = true;
+                _enemyEntitiesInCombat[EntityType.Enemy] = lifeNode;
             }
-            else if (_enemyEntitiesInCombat[EntityType.Enemy2] == false)
+            else if (_enemyEntitiesInCombat[EntityType.Enemy2] == null)
             {
                 combatEntity.EntityType = EntityType.Enemy2;
                 _combatants.Add(combatEntity);
                 GameObject lifeNode = Instantiate(EnemyLifeNode, EnemyLifeNodeCollection.transform);
                 lifeNode.GetComponent<LifeNodeManager>().SetEntity(EntityType.Enemy2);
-                this.gameObject.AddComponent<MeleeBottomAI>().SetEntity(EntityType.Enemy2);
+                lifeNode.AddComponent<MeleeBottomAI>().SetEntity(EntityType.Enemy2);
                 CombatEventManager.InitializeLifeNode(combatEntity);
-                _enemyEntitiesInCombat[EntityType.Enemy2] = true;
+                _enemyEntitiesInCombat[EntityType.Enemy2] = lifeNode;
             }
-            else if(_enemyEntitiesInCombat[EntityType.Enemy3] == false)
+            else if(_enemyEntitiesInCombat[EntityType.Enemy3] == null)
             {
                 combatEntity.EntityType = EntityType.Enemy3;
                 _combatants.Add(combatEntity);
                 GameObject lifeNode = Instantiate(EnemyLifeNode, EnemyLifeNodeCollection.transform);
                 lifeNode.GetComponent<LifeNodeManager>().SetEntity(EntityType.Enemy3);
-                this.gameObject.AddComponent<MeleeBottomAI>().SetEntity(EntityType.Enemy3);
+                lifeNode.AddComponent<MeleeBottomAI>().SetEntity(EntityType.Enemy3);
                 CombatEventManager.InitializeLifeNode(combatEntity);
-                _enemyEntitiesInCombat[EntityType.Enemy3] = true;
+                _enemyEntitiesInCombat[EntityType.Enemy3] = lifeNode;
             }
             else
             {
-                Debug.LogError("TOO MANY ENEMIES");
+                _waitingCombatants.Add(combatEntity);
             }
         } //Add player
         else if (combatEntity.EntityType == EntityType.Player)
@@ -115,6 +115,55 @@ public class CombatManager : MonoBehaviour
         }
 
         _combatants.Sort();
+    }
+
+    private void RemoveCombatant(CombatEntity combatEntity)
+    {
+        if (combatEntity.EntityType != EntityType.Player)
+        {
+            //Remove combatant's LifeNode and intents
+            Destroy(_enemyEntitiesInCombat[combatEntity.EntityType]);
+            CombatEventManager.DeleteIntent(combatEntity.EntityType);
+            //Remove combatant from dictonary and combatants
+            _enemyEntitiesInCombat[combatEntity.EntityType] = null;
+            _combatants.Remove(combatEntity);
+
+            //Check if a new enemy needs to added to combat
+            if (_waitingCombatants.Count != 0)
+            {
+                _enemiesToBeAdded++;
+            }
+            else if (_combatants.Count == 1) //Check if this was the last enemy
+            {
+                //Combat is won
+                Debug.Log("Player is VICTORIOUS");
+            }
+        }
+        else
+        {
+            //PLAYER IS DEFEATED
+        }
+    }
+
+    private void EndRound()
+    {
+        //Start next round, on turn 0.
+        _round++;
+        _turn = 0;
+
+        //Check if any new enemies need to be added to combat.
+        if (_enemiesToBeAdded != 0)
+        {
+            for (int i = 0; i < _enemiesToBeAdded; i++)
+            {
+
+                AddCombatant(_waitingCombatants[0]);
+                _waitingCombatants.RemoveAt(0);
+            }
+            _enemiesToBeAdded = 0;
+        }
+
+        CombatEventManager.EndRound();
     }
 
 }

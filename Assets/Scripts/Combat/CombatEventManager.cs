@@ -22,14 +22,20 @@ public class CombatEventManager : MonoBehaviour
     public static event TurnEvent StartTurnEvent;
     public static event TurnEvent EndTurnEvent;
 
+    //RoundEvent
+    public delegate void RoundEvent();
+    public static event RoundEvent EndRoundEvent;
+
 
     //InitializeEvent
-    public delegate void InitializeEvent(CombatEntity combatant);
-    public static event InitializeEvent InitializeCombatantEvent;
+    public delegate void CombatantEvent(CombatEntity combatant);
+    public static event CombatantEvent InitializeCombatantEvent;
+    public static event CombatantEvent DefeatedCombatantEvent;
 
     //IntentEvents
     public delegate void IntentEvent(EnemyIntent intent);
     public static event IntentEvent EnemyIntentEvent;
+    public static TurnEvent DeleteIntentEvent; //Maybe rename TurnEvent?
 
     //EnergyEvent
     public delegate void EnergyEvent(int energyAmount);
@@ -79,6 +85,23 @@ public class CombatEventManager : MonoBehaviour
         }
     }
 
+    public static void DeleteIntent(EntityType fromEntity)
+    {
+        //Checks subs
+        if (DeleteIntentEvent != null)
+        {
+            DeleteIntentEvent.Invoke(fromEntity);
+        }
+    }
+
+    public static void EndRound()
+    {
+        //Check subs
+        if (EndRoundEvent != null)
+        {
+            EndRoundEvent.Invoke();
+        }
+    }
     public static void EndTurn(EntityType combatant)
     {
         //Check if there are any subscribers
@@ -121,6 +144,15 @@ public class CombatEventManager : MonoBehaviour
         if (InitializeCombatantEvent != null)
         {
             InitializeCombatantEvent.Invoke(combatant);
+        }
+    }
+
+    public static void DefeatedCombatant(CombatEntity combatant)
+    {
+        //Check for subs
+        if (DefeatedCombatantEvent != null)
+        {
+            DefeatedCombatantEvent.Invoke(combatant);
         }
     }
 
