@@ -7,7 +7,6 @@ namespace Assets.Scripts.Combat.EnemyAI
 {
     public class MeleeBottomAI : EnemyAI
     {
-        
         protected override void CalculateIntent()
         {
             int randNumber = Random.Range(1, 101);

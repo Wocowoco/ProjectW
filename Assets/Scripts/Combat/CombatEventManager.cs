@@ -22,6 +22,7 @@ public class CombatEventManager : MonoBehaviour
     public static event TurnEvent StartTurnEvent;
     public static event TurnEvent EndTurnEvent;
 
+
     //InitializeEvent
     public delegate void InitializeEvent(CombatEntity combatant);
     public static event InitializeEvent InitializeCombatantEvent;
@@ -35,11 +36,6 @@ public class CombatEventManager : MonoBehaviour
     public static event EnergyEvent SpendEnergyEvent;
     public static event EnergyEvent RemainingEnergyEvent;
 
-    private List<CombatEntity> _combatants = new List<CombatEntity>();
-
-    private int _turn = 0;
-    private int _round = 0;
-
 
     private void Awake()
     {
@@ -49,18 +45,7 @@ public class CombatEventManager : MonoBehaviour
     }
     void Start()
     {
-        this.gameObject.AddComponent<MeleeBottomAI>();
 
-        CombatEntity player = new(5, 5, 5, 2, 2, 1, 3, EntityType.Player);
-        CombatEntity enemy = new(3, 3, 3, 0, 1, 1, 1);
-        _combatants.Add(player);
-        InitializeLifeNode(player);
-        _combatants.Add(enemy);
-        InitializeLifeNode(enemy);
-        _combatants.Sort();
-
-        EndTurnEvent += IncreaseTurnCounter;
-        StartTurn(_combatants[_turn].EntityType);
     }
     // Update is called once per frame
     void Update()
@@ -139,29 +124,6 @@ public class CombatEventManager : MonoBehaviour
         }
     }
 
-    private void IncreaseTurnCounter(EntityType combatant)
-    {
-        //Check if the endturn event came from the combatant whose turn it was, otherwise ignore the event.
-        if (_combatants[_turn].EntityType == combatant)
-        {
-            //Debug.Log($"Round {_round}, turn {_turn} ended. ({_combatants[_turn].EntityType})");
-            _turn++;
-            if (_turn == _combatants.Count)
-            {
-                _round++;
-                //Logic for a new round
-                _turn = 0;
-            }
-            //Start next combatants turn
-            StartTurn(_combatants[_turn].EntityType);
-        }
-        else
-        {
-            Debug.LogWarning($"EndTurnEvent received from {combatant}. (Expected {_combatants[_turn].EntityType})");
-        }
-
-    }
-
     public enum DefenceRow
     {
         Top = 1,
@@ -189,7 +151,9 @@ public class CombatEventManager : MonoBehaviour
     public enum EntityType
     {
         Player,
-        Enemy
+        Enemy,
+        Enemy2,
+        Enemy3
     }
 
     public enum PlayerAction

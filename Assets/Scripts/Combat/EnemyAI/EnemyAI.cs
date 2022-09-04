@@ -6,7 +6,7 @@ namespace Assets.Scripts.Combat.EnemyAI
 {
     public abstract class EnemyAI : MonoBehaviour
     {
-        private EntityType _myEntityType = EntityType.Enemy;
+        protected EntityType _myEntityType = EntityType.Enemy;
         protected EntityType EntityType { get => _myEntityType;}
         protected CombatEntity _player;
         protected EnemyIntent _intent = null;
@@ -60,6 +60,11 @@ namespace Assets.Scripts.Combat.EnemyAI
             DoTurn(); //Timing bug with deleting defence and intent at the same time, needs to be spaced out with delay
             EndTurn();
             CalculateIntent();
+        }
+
+        public void SetEntity(EntityType entity)
+        {
+            _myEntityType = entity;
         }
 
     }

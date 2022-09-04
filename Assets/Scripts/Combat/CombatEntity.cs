@@ -5,7 +5,7 @@ using static CombatEventManager;
 public class CombatEntity : IComparable<CombatEntity>
 {
     [field: SerializeField]
-    public EntityType EntityType { get; private set; } = EntityType.Enemy;
+    public EntityType EntityType { get; set; } = EntityType.Enemy;
 
 
     //Stats 

@@ -10,16 +10,11 @@ public class LifeNodeManager : MonoBehaviour
     public CombatEntity Entity;
 
     [SerializeField]
-    private EntityType EntityType;
+    private EntityType _entityType;
 
     private DefenceTypeRow _defenceTypesTop;
     private DefenceTypeRow _defenceTypesMiddle;
     private DefenceTypeRow _defenceTypesBottom;
-
-    private static Color _meleeImmuneColor = Color.red;
-    private static Color _normalColor = new Color32(104, 108, 130, 255);
-    private static Color _magicImmuneColor = Color.blue;
-    private static Color _rangedImmuneColor = Color.green;
 
     private List<EntityType> _intentList = new();
 
@@ -44,7 +39,7 @@ public class LifeNodeManager : MonoBehaviour
 
     public void Initialize(CombatEntity combatant)
     {
-        if (combatant.EntityType == EntityType)
+        if (combatant.EntityType == _entityType)
         {
             Entity = combatant;
             _hpText = this.transform.Find("HpText").gameObject.GetComponent<TextMeshProUGUI>();
@@ -58,10 +53,6 @@ public class LifeNodeManager : MonoBehaviour
 
             Health = Entity.CurrentHealth;
             _hpText.text = Health.ToString();
-
-            //TESTING REMOVE
-            _defenceTypesTop.SwapDefenceType(0, DefenceType.MagicImmune);
-            _defenceTypesMiddle.SwapDefenceType(0, DefenceType.MeleeImmune);
         }
     }
 
@@ -83,6 +74,11 @@ public class LifeNodeManager : MonoBehaviour
 
     private void TakeDamage(EntityType originEntity, EntityType targetEntity, DefenceRow defenceRow, int amountOfDamage, DamageType damageType)
     {
+        //Don't check events if not initialized
+        if (Entity == null)
+        {
+            return;
+        }
         //Check if the entity already has an intent, if so, delete the old intent.
         if (_intentList.Contains(originEntity))
         {
@@ -134,6 +130,11 @@ public class LifeNodeManager : MonoBehaviour
 
     private void IdentifyEnemyIntent(EnemyIntent intent)
     {
+        //If LifeNode isn't initialized, don't check intents
+        if (Entity == null)
+        {
+            return;
+        }
         //Check if the entity already has an intent, if so, delete the old intent.
         if (_intentList.Contains(intent.OriginEntity))
         {
@@ -142,6 +143,7 @@ public class LifeNodeManager : MonoBehaviour
             _defenceTypesBottom.DestroyIntent(intent.OriginEntity);
             _intentList.Remove(intent.OriginEntity);
         }
+
         if (Entity.EntityType == intent.TargetEntity)
         {
             _intentList.Add(intent.OriginEntity);
@@ -172,6 +174,11 @@ public class LifeNodeManager : MonoBehaviour
         _defenceTypesTop.Initialize(Entity.StartingDefenceTop);
         _defenceTypesMiddle.Initialize(Entity.StartingDefenceMiddle);
         _defenceTypesBottom.Initialize(Entity.StartingDefenceBottom);
+    }
+
+    public void SetEntity(EntityType entityType)
+    {
+        _entityType = entityType;
     }
 
 }
