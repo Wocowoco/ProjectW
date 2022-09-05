@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using System.Xml;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Analytics;
+using UnityEngine.Android;
 using UnityEngine.UI;
 using static CombatEventManager;
 
@@ -10,7 +13,9 @@ public class PlayerActionButton : MonoBehaviour
 {
 
     public PlayerAction PlayerAction;
-
+    public int Top;
+    public int Middle;
+    public int Bottom;
 
     //Should be ItemCombatDetails
     public Texture Image;
@@ -55,7 +60,7 @@ public class PlayerActionButton : MonoBehaviour
     }
     void Start()
     {
-        AttackStyle = new() { Top = 5, Middle = 45, Bottom = 50 };
+        AttackStyle = new() { Top = Top, Middle = Middle, Bottom = Bottom };
 
         PrintEnergy();
         SetAction();
@@ -87,10 +92,38 @@ public class PlayerActionButton : MonoBehaviour
 
     private void SetAttackStyle()
     {
-        //TODO - Add colors based on %
+
         TopChanceText.text = AttackStyle.Top.ToString() + "%";
+        TopChanceText.color = GetPercentageInColor(AttackStyle.Top);
         MiddleChanceText.text = AttackStyle.Middle.ToString() + "%";
+        MiddleChanceText.color = GetPercentageInColor(AttackStyle.Middle);
         BottomChanceText.text = AttackStyle.Bottom.ToString() + "%";
+        BottomChanceText.color = GetPercentageInColor(AttackStyle.Bottom);
+    }
+
+    private Color GetPercentageInColor(int percentage)
+    {
+        if (percentage > 59)
+        {
+            return new Color32(0, 255, 0, 255); //Green
+        }
+        else if (percentage > 39)
+        {
+            return new Color32(255, 255, 0, 255); //Yellow
+        }
+        else if (percentage > 19)
+        {
+            return new Color32(255, 180, 0, 255);//Orange
+        }
+        else if (percentage > 1)
+        {
+            return new Color32(255, 0, 0, 255);//Red
+        }
+        else
+        {
+            return new Color32(0, 0, 0, 255); //Black
+        }
+        
     }
 
     private void SetAction()
