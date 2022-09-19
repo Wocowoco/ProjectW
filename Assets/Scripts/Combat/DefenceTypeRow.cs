@@ -171,7 +171,7 @@ public class DefenceTypeRow : MonoBehaviour
     public void CreateDamageIntent(EntityType originEntity, int damageAmount, DamageType damageType)
     {
         DamageIntent damageIntent = Instantiate(CombatEventManager.DefenceObjects.IntentObject,this.gameObject.transform).GetComponent<DamageIntent>();
-        damageIntent.Initialize(damageAmount);
+        damageIntent.Initialize(damageAmount, damageType);
         _intents.Add(originEntity);
     }
 
