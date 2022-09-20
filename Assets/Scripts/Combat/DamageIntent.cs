@@ -7,8 +7,10 @@ public class DamageIntent : MonoBehaviour
 {
     public TextMeshProUGUI DamageText;
     public RawImage Background;
+    public TextMeshProUGUI IndicatorText;
 
-    public void Initialize(int damage, DamageType damageType)
+
+    public void Initialize(EntityType originEntity, int damage, DamageType damageType)
     {
         DamageText.text = damage.ToString();
         switch (damageType)
@@ -21,6 +23,20 @@ public class DamageIntent : MonoBehaviour
                 break;
             case DamageType.Magic:
                 Background.color = new Color32(56, 67, 144, 255);
+                break;
+        }
+        switch (originEntity)
+        {
+            case EntityType.Enemy:
+                IndicatorText.text = "A";
+                break;
+            case EntityType.Enemy2:
+                IndicatorText.text = "B";
+                break;
+            case EntityType.Enemy3:
+                IndicatorText.text = "C";
+                break;
+            default:
                 break;
         }
     }

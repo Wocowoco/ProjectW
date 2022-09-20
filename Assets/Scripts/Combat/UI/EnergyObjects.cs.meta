@@ -3,7 +3,9 @@ guid: 9089ecfddc782774b9e5bc588ff68176
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - EnergyBackground: {fileID: 1637652653380424961, guid: 91e222b9877d2f24d8511d25965a26c5, type: 3}
+  - EnergyForeground: {fileID: 5881861190478127273, guid: 3b9cfb08c774b844ca833ca7fe2a30ab, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

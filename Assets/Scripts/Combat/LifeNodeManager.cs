@@ -19,6 +19,7 @@ public class LifeNodeManager : MonoBehaviour
     private List<EntityType> _intentList = new();
 
     private TextMeshProUGUI _hpText;
+    private TextMeshProUGUI _indicatorText;
 
     public int Health
     {
@@ -53,6 +54,29 @@ public class LifeNodeManager : MonoBehaviour
 
             Health = Entity.CurrentHealth;
             _hpText.text = Health.ToString();
+
+
+
+            //Set indicatorText based on enemy
+            if (_entityType != EntityType.Player)
+            {
+                _indicatorText = this.transform.Find("IndicatorText").gameObject.GetComponent<TextMeshProUGUI>();
+            }
+   
+            switch (_entityType)
+            {
+                case EntityType.Enemy:
+                    _indicatorText.text = "A";
+                    break;
+                case EntityType.Enemy2:
+                    _indicatorText.text = "B";
+                    break;
+                case EntityType.Enemy3:
+                    _indicatorText.text = "C";
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
